@@ -65,5 +65,5 @@ cns.fasta with fasta format, the fasta header includes primary seqID, length, co
 * **HELP**   
 Please raise an issue at the issue page.
 
-* **Contact information**
+* **Contact information**    
 For additional help, please send an email to huj_at_grandomics_dot_com.

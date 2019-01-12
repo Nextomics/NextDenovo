@@ -10,7 +10,6 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 >      This package aims to construct the string graph with corrected data. 
 
 * **INSTALL**  
-
 `cd NextDenovo && make`
 
 * **UNINSTALL**  

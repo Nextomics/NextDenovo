@@ -176,7 +176,7 @@ def get_availablenodes(cfg):
 		nodes_len = len(nodes)
 		if nodes_len == 11:
 			node = nodes[0] if '-' not in nodes[6:9] else ''
-		elif node and nodes_len > 2 and nodes[0] == cfg['job_queue'] and node not in ava_nodes:
+		elif node and nodes_len > 2 and nodes[0] == cfg['sge_queue'] and node not in ava_nodes:
 			ava_nodes.append(node)
 	return ava_nodes
 
@@ -262,7 +262,7 @@ def main(args):
 		task = Task(set_task(cfg, 'db_split'), prefix = 'db_split')
 		if not task.check():
 			task.set_subtasks(job_prefix = job_prefix)
-			task.set_run(max_pa_jobs = 1, job_type = cfg['job_type'], queue = cfg['job_queue'] , option = cfg['sge_options'])
+			task.set_run(max_pa_jobs = 1, job_type = cfg['job_type'], queue = cfg['sge_queue'] , sge_options = cfg['sge_options'])
 			task.run.start()
 			if task.run.check():
 				task.set_task_done()
@@ -296,7 +296,7 @@ def main(args):
 		task.set_subtasks(job_prefix = job_prefix)
 		if not task.check():
 			task.set_run(max_pa_jobs = cfg['pa_raw_align'] , bash = '/bin/bash', job_type = cfg['job_type'], \
-				queue = cfg['job_queue'] , option = cfg['sge_options'], vf = '30G', cpu = cfg['minimap2_threads'])
+				queue = cfg['sge_queue'] , sge_options = cfg['sge_options'], vf = '30G', cpu = cfg['minimap2_threads'])
 			total_tasks = len(task.run.unfinished_tasks)
 			task.run.start()
 
@@ -321,7 +321,7 @@ def main(args):
 		task.set_subtasks(job_prefix = job_prefix)
 		if not task.check():
 			task.set_run(max_pa_jobs = cfg['pa_raw_align'], bash = '/bin/bash', job_type = cfg['job_type'], \
-				queue = cfg['job_queue'], option = cfg['sge_options'], vf = '50G')#need update memory required
+				queue = cfg['sge_queue'], sge_options = cfg['sge_options'], vf = '50G')#need update memory required
 			pre_sort_align_input(sort_align_input, task.run.unfinished_tasks)
 			task.run.start()
 			if task.run.check():
@@ -340,8 +340,8 @@ def main(args):
 		task = Task(set_task(cfg, 'get_cns', get_cns_input), prefix = 'get_cns', convertpath = False)
 		if not task.check():
 			task.set_subtasks(job_prefix = job_prefix)
-			task.set_run(max_pa_jobs = cfg['pa_correction'] , bash = '/bin/bash', job_type = cfg['job_type'], queue = cfg['job_queue'] , \
-				option = cfg['sge_correction_options'])
+			task.set_run(max_pa_jobs = cfg['pa_correction'] , bash = '/bin/bash', job_type = cfg['job_type'], queue = cfg['sge_queue'] , \
+				sge_options = cfg['sge_options'])
 			pre_idxs(cfg, '01.get_cns.input.idxs')
 			task.run.start()
 			if task.run.check():

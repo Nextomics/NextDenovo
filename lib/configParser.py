@@ -41,35 +41,25 @@ class ConfigParser:
 			self.cfg['read_cuoff'] = '1k'
 		if 'blocksize' not in self.cfg:
 			self.cfg['blocksize'] = '10g'
-		if 'sge_option' not in self.cfg:
-			self.cfg['sge_options'] = ''
 		if 'pa_raw_align' not in self.cfg:
 			self.cfg['pa_raw_align'] = '10'
 		if 'pa_correction' not in self.cfg:
 			self.cfg['pa_correction'] = '3'
 		if 'seed_cutfiles' not in self.cfg:
 			self.cfg['seed_cutfiles'] = self.cfg['pa_correction']
+		if 'correction_options' not in self.cfg:
+			self.cfg['correction_options'] = '-p 10'
+		if 'sge_pe' not in self.cfg:
+			self.cfg['sge_pe'] = '-pe smp'
+		if 'sge_options' not in self.cfg:
+			self.cfg['sge_options'] = self.cfg['sge_pe']
+		else:
+			self.cfg['sge_options'] = self.cfg['sge_options'] + ' ' + self.cfg['sge_pe']
+
 		self.cfg['seed_cutfiles'] = str(max(int(self.cfg['pa_correction']), int(self.cfg['seed_cutfiles'])))
 
 		self.cfg['input_fofn'] = self.cfg['input_fofn'] if self.cfg['input_fofn'].startswith('/') else self.cfgdir + '/' + self.cfg['input_fofn']
 		self.cfg['workdir'] = self.cfg['workdir'] if self.cfg['workdir'].startswith('/') else self.cfgdir + '/' + self.cfg['workdir']
-
-		if 'correction_options' not in self.cfg and 'sge_correction_options' not in self.cfg:
-			self.cfg['correction_options'] = '-p 15'
-			self.cfg['sge_correction_options'] = '-pe smp 15'
-		elif 'correction_options' in self.cfg and 'sge_correction_options' not in self.cfg:
-			self.cfg['sge_correction_options'] = '-pe smp ' + parse_options_value(self.cfg['correction_options'], '-p')
-		elif 'correction_options' not in self.cfg and 'sge_correction_options' in self.cfg:
-			self.cfg['correction_options'] = '-p ' + parse_options_value(self.cfg['sge_correction_options'], '-pe')
-		else:
-			if self.cfg['job_type'] != 'local':
-				correction_core = min(int(parse_options_value(self.cfg['correction_options'], '-p')), \
-					int(parse_options_value(self.cfg['sge_correction_options'], '-pe')))
-			else:
-				correction_core = int(parse_options_value(self.cfg['correction_options'], '-p'))
-			self.cfg['correction_options'] += ' -p ' + str(correction_core)
-			self.cfg['sge_correction_options'] = '-pe smp ' + str(correction_core)
-		
 		self.cfg['raw_aligndir'] = self.cfg['workdir'] + '/01.raw_align'
 		self.cfg['cns_aligndir'] = self.cfg['workdir'] + '/02.cns_align'
 		self.cfg['ctg_graphdir'] = self.cfg['workdir'] + '/03.ctg_graph'

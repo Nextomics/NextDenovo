@@ -141,14 +141,14 @@ class Task(object):
 					print >>OUT, subtask
 			self.subtasks.append(d + subtask_dir + '/' + subtask_file)
 
-	def set_run(self, max_pa_jobs = 5, bash = '/bin/bash', job_type = 'sge', interval = 30, cpu = 1, vf = '', queue = '', option = ''):
-		self.run = Run(self.subtasks, max_pa_jobs, bash, job_type, interval , cpu , vf, queue, option)
+	def set_run(self, max_pa_jobs = 5, bash = '/bin/bash', job_type = 'sge', interval = 30, cpu = 1, vf = '', queue = '', sge_options = ''):
+		self.run = Run(self.subtasks, max_pa_jobs, bash, job_type, interval , cpu , vf, queue, sge_options)
 
 class Run(object):
 	"""docstring for Run"""
 	RUNNINGTASK = {'sge':[], 'local':[]}
 
-	def __init__(self, tasks, max_pa_jobs, bash, job_type, interval, cpu, vf, queue, option):
+	def __init__(self, tasks, max_pa_jobs, bash, job_type, interval, cpu, vf, queue, sge_options):
 		self.tasks = tasks
 		self.unfinished_tasks = []
 		self.job_type = job_type
@@ -158,8 +158,8 @@ class Run(object):
 		self.vf = str(vf)
 		self.bash = str(bash)
 		self.queue = str(queue)
-		self.rawoption = str(option)
-		self.option = self._getoption(self.rawoption)
+		self.sge_options = str(sge_options)
+		self.option = self._getoption()
 		self.check()
 		
 	def start(self):
@@ -174,7 +174,7 @@ class Run(object):
 		if self.job_type == 'sge':
 			vfs = re.split(r'(\d+)', self.vf)
 			self.vf = str(int(int(vfs[-2]) * 1.5)) + vfs[-1] #most unfinished jobs were caused by Memory in SGE system. TODO: should avoid larger the total memory of computer-node
-			self.option = self._getoption(self.rawoption)
+			self.option = self._getoption()
 		# self.check()
 		self.start()
 
@@ -263,16 +263,17 @@ class Run(object):
 				time.sleep(0.5)
 			Run.RUNNINGTASK['local'].remove(subid)
 
-	def _getoption(self, option):
-		cmd = 'qsub'
-		if option:
-			cmd += ' ' + option
-		if '-S' not in option:
+	def _getoption(self):
+		cmd = ''
+		if 'qsub' not in self.sge_options:
+			cmd = 'qsub ' + self.sge_options + ' ' + self.cpu
+		else:
+			cmd = self.sge_options + ' ' + self.cpu
+
+		if '-S' not in self.sge_options:
 			cmd += ' -S ' + self.bash
-		if self.vf and ('virtual_free' not in option and 'vf' not in option):
+		if self.vf and ('virtual_free' not in self.sge_options and 'vf' not in self.sge_options):
 			cmd += ' -l virtual_free=' + self.vf
-		if self.queue and '-q' not in option:
+		if self.queue and '-q' not in self.sge_options:
 			cmd += ' -q ' + self.queue
-		if self.cpu and self.cpu != '1' and 'smp' not in option:
-			cmd += ' -pe smp ' + self.cpu
 		return cmd

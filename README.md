@@ -24,7 +24,6 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	[General]                # global options
 	job_type = sge           # [sge or local]. (default: sge)
 	job_prefix = nextDenovo  # prefix tag for jobs. (default: nextDenovo)
-	job_queue = all.q        # bind job to queue(s). (default: all.q)
 	task = all               # task need to run [all, correct or graph]. (default: all)
 	rewrite = no             # overwrite existed directory [yes, no]. (default: no)
 	rerun = 3                # re-run unfinished jobs untill finished or reached ${rerun} loops, 0=no. (default: 3)
@@ -32,6 +31,8 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	input_fofn = input.fofn  # input file, one line one file. (<b>required</b>)
 	workdir = 01.workdir     # work directory. (default: ./)
 	usetempdir = /tmp        # temporary directory in compute nodes to avoid high IO wait. (default: no)
+	sge_queue = all.q        # bind job to queue(s). (default: all.q)
+	sge_pe = -pe smp         # Parallel programming environment (PE) for parallel computing in SGE. (default: -pe smp)
 
 	[correct_option]         # options using only in corrected step.
 	read_cuoff = 1k          # filted reads with length < read_cuoff. (default: 1k)
@@ -41,7 +42,6 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	pa_raw_align = 10        # number of processes used for aligning. (default: 10)
 	pa_correction = 15       # number of processes used for correcting. (default: 15)
 	minimap2_options = -x ava-ont -t 10   # minimap2 options, used to set PacBio/Nanopore read overlap (<b>required</b>)
-	sge_correction_options = -pe smp 15   # request slot range for parallel jobs. (default: -pe smp 15)
 	correction_options = -p 10            # nextCorrector options, see below. (default: -p 10)
 </pre>
 

@@ -141,23 +141,22 @@ class Task(object):
 					print >>OUT, subtask
 			self.subtasks.append(d + subtask_dir + '/' + subtask_file)
 
-	def set_run(self, max_pa_jobs = 5, bash = '/bin/bash', job_type = 'sge', interval = 30, cpu = 1, vf = '', queue = '', sge_options = ''):
-		self.run = Run(self.subtasks, max_pa_jobs, bash, job_type, interval , cpu , vf, queue, sge_options)
+	def set_run(self, max_pa_jobs = 5, bash = '/bin/bash', job_type = 'sge', interval = 30, cpu = 1, vf = '', sge_options = ''):
+		self.run = Run(self.subtasks, max_pa_jobs, bash, job_type, interval, cpu , vf, sge_options)
 
 class Run(object):
 	"""docstring for Run"""
 	RUNNINGTASK = {'sge':[], 'local':[]}
 
-	def __init__(self, tasks, max_pa_jobs, bash, job_type, interval, cpu, vf, queue, sge_options):
+	def __init__(self, tasks, max_pa_jobs, bash, job_type, interval, cpu, vf, sge_options):
 		self.tasks = tasks
 		self.unfinished_tasks = []
 		self.job_type = job_type
 		self.max_pa_jobs = int(max_pa_jobs)
 		self.interval = int(interval)
 		self.cpu = str(cpu)
-		self.vf = str(vf)
+		self.vf = str(vf) if vf else self.cpu + 'G'
 		self.bash = str(bash)
-		self.queue = str(queue)
 		self.sge_options = str(sge_options)
 		self.option = self._getoption()
 		self.check()
@@ -264,16 +263,12 @@ class Run(object):
 			Run.RUNNINGTASK['local'].remove(subid)
 
 	def _getoption(self):
-		cmd = ''
-		if 'qsub' not in self.sge_options:
-			cmd = 'qsub ' + self.sge_options + ' ' + self.cpu
-		else:
-			cmd = self.sge_options + ' ' + self.cpu
-
+		cmd = self.sge_options if 'qsub' in self.sge_options else 'qsub ' + self.sge_options
+		
 		if '-S' not in self.sge_options:
-			cmd += ' -S ' + self.bash
+			cmd += ' -S {bash}'
 		if self.vf and ('virtual_free' not in self.sge_options and 'vf' not in self.sge_options):
-			cmd += ' -l virtual_free=' + self.vf
-		if self.queue and '-q' not in self.sge_options:
-			cmd += ' -q ' + self.queue
-		return cmd
+			cmd += ' -l virtual_free={vf}'
+		if '-pe' not in self.sge_options:
+			cmd + ' -pe smp {cpu}'
+		return cmd.format(cpu=self.cpu, vf=self.vf, bash=self.bash)

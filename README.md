@@ -31,8 +31,8 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	input_fofn = input.fofn  # input file, one line one file. (<b>required</b>)
 	workdir = 01.workdir     # work directory. (default: ./)
 	usetempdir = /tmp        # temporary directory in compute nodes to avoid high IO wait. (default: no)
-	sge_queue = all.q        # bind job to queue(s). (default: all.q)
-	sge_pe = -pe smp         # Parallel programming environment (PE) for parallel computing in SGE. (default: -pe smp)
+	sge_options = -l vf={vf} -q all.q -pe smp {cpu}
+	                         # options used in SGE.
 
 	[correct_option]         # options using only in corrected step.
 	read_cuoff = 1k          # filted reads with length < read_cuoff. (default: 1k)

@@ -49,12 +49,8 @@ class ConfigParser:
 			self.cfg['seed_cutfiles'] = self.cfg['pa_correction']
 		if 'correction_options' not in self.cfg:
 			self.cfg['correction_options'] = '-p 10'
-		if 'sge_pe' not in self.cfg:
-			self.cfg['sge_pe'] = '-pe smp'
 		if 'sge_options' not in self.cfg:
-			self.cfg['sge_options'] = self.cfg['sge_pe']
-		else:
-			self.cfg['sge_options'] = self.cfg['sge_options'] + ' ' + self.cfg['sge_pe']
+			self.cfg['sge_options'] = ''
 
 		self.cfg['seed_cutfiles'] = str(max(int(self.cfg['pa_correction']), int(self.cfg['seed_cutfiles'])))
 
@@ -106,6 +102,7 @@ class ConfigParser:
 				else:
 					self.cfg['correction_options'] += ' -max_lq_length 10000'
 
+		self.cfg['cns_threads'] = int(parse_options_value(self.cfg['correction_options'], '-p'))
 		# if '-min_len_seed' not in self.cfg['correction_options']:
 		# 	self.cfg['correction_options'] += ' -min_len_seed ' + self.cfg['seed_cutoff']
 

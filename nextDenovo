@@ -176,7 +176,7 @@ def get_availablenodes(cfg):
 		nodes_len = len(nodes)
 		if nodes_len == 11:
 			node = nodes[0] if '-' not in nodes[6:9] else ''
-		elif node and nodes_len > 2 and (not cfg['sge_queue'] or nodes[0] == cfg['sge_queue']) and node not in ava_nodes:
+		elif node and nodes_len > 2 and (not cfg['sge_queue'] or nodes[0] in cfg['sge_queue']) and node not in ava_nodes:
 			ava_nodes.append(node)
 	return ava_nodes
 

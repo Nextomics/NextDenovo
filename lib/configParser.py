@@ -51,6 +51,8 @@ class ConfigParser:
 			self.cfg['correction_options'] = '-p 10'
 		if 'sge_options' not in self.cfg:
 			self.cfg['sge_options'] = ''
+		if 'sge_queue' not in self.cfg:
+			self.cfg['sge_queue'] = parse_options_value(self.cfg['sge_options'], '-q') if '-q' in self.cfg['sge_options'] else ''
 
 		self.cfg['seed_cutfiles'] = str(max(int(self.cfg['pa_correction']), int(self.cfg['seed_cutfiles'])))
 

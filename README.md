@@ -44,7 +44,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	sort_options = -m 5g -t 2 -k 50   
 	                         # sort_overlap options, see below. (defalut: -m 40G -t 8 -k 40)
 	minimap2_options = -x ava-ont -t 10   
-	                         # minimap2 options, used to set PacBio/Nanopore read overlap (<b>required</b>)
+	                         # minimap2 options, used to set PacBio/Nanopore read overlap. (<b>required</b>)
 	correction_options = -p 10            
 	                         # nextCorrector options, see below. (default: -p 10)
 </pre>
@@ -54,7 +54,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	[sort_options]
 	-t                       # number of threads to use. [8]
 	-m                       # set maximum available buffer size, larger buffer size will accelerate sort process, suffix K/M/G. [40G]
-	-k                       # maximum depth of each overlap, larger depth will produce more corrected data with slower speed. [40]
+	-k                       # maximum depth of each overlap, larger depth will produce more corrected and more accurate data with slower speed. [40]
 
 	[correction_options]
 	-p , --process           # set the number of processes used for correcting. (default: 10)

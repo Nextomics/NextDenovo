@@ -126,7 +126,12 @@ def sort_align(cfg):
 	cmd = ''
 	d = cfg['raw_aligndir'] + '/'
 	for seed_file in iglob(d + '.input.seed.*.idx'):
-		cmd += SCRIPT_PATH + '/bin/sort_overlap'  + ' -i ' + seed_file + ' -o ' + os.path.basename(seed_file)[1:-3] + 'sorted.ovl input.fofn;\n' 
+		cmd += SCRIPT_PATH + '/bin/sort_overlap '  + cfg['sort_options'] +  ' -i ' + seed_file +\
+			' -o ' + os.path.basename(seed_file)[1:-3] + 'sorted.ovl '
+		if 'usetempdir' in cfg:
+			cmd += '-d ' + cfg['usetempdir'] + ' '
+		cmd += 'input.fofn;\n'
+
 	return cmd
 
 def raw_align(cfg):
@@ -321,7 +326,7 @@ def main(args):
 		task.set_subtasks(job_prefix = job_prefix)
 		if not task.check():
 			task.set_run(max_pa_jobs = cfg['pa_raw_align'], bash = '/bin/bash', job_type = cfg['job_type'], \
-				sge_options = cfg['sge_options'], vf = '50G')#need update memory required
+				sge_options = cfg['sge_options'], vf = cfg['sort_mem'], cpu = cfg['sort_threads'])
 			pre_sort_align_input(sort_align_input, task.run.unfinished_tasks)
 			task.run.start()
 			if task.run.check():

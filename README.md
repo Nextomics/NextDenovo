@@ -54,7 +54,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	[sort_options]
 	-t                       # number of threads to use. [8]
 	-m                       # set maximum available buffer size, larger buffer size will accelerate sort process, suffix K/M/G. [40G]
-	-k                       # maximum depth of each overlap, larger depth will produce more corrected and more accurate data with slower speed. [40]
+	-k                       # maximum depth of each overlap, larger depth will produce more accurate and more corrected data with slower speed. [40]
 
 	[correction_options]
 	-p , --process           # set the number of processes used for correcting. (default: 10)

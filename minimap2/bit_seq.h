@@ -1,3 +1,4 @@
+#define _FILE_OFFSET_BITS 64
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -54,7 +55,7 @@ kseq_t *kseq_init(FILE *fp)
   s->name.s = s->comment.s = s->seq.s = s->qual.s = NULL;
   s->name.l = s->name.m = s->comment.l = s->comment.m = 0;
   s->seq.l = s->seq.m = s->qual.l = s->qual.m = 0;
-  bases_arr = init_bases(65536);
+  if (!bases_arr) bases_arr = init_bases(65536);
   return s;
 }
 
@@ -84,7 +85,7 @@ int kseq_read(kseq_t *seq)
 
   uint32_t name, length;
   //Parse sequence name
-  fseek(seq->f->f, seq->offset, SEEK_SET);
+  fseeko(seq->f->f, seq->offset, SEEK_SET);
   fread(&name, sizeof(uint32_t), 1, seq->f->f);
   //Check end of file!
   if(feof(seq->f->f)) {
@@ -93,11 +94,11 @@ int kseq_read(kseq_t *seq)
   }
   seq->offset += 4;
   //Parse sequence length
-  fseek(seq->f->f, seq->offset, SEEK_SET);
+  fseeko(seq->f->f, seq->offset, SEEK_SET);
   fread(&length, sizeof(uint32_t), 1, seq->f->f);
   seq->offset += 4;
   //Parse sequence, convert 2bit to bases
-  fseek(seq->f->f, seq->offset, SEEK_SET);
+  fseeko(seq->f->f, seq->offset, SEEK_SET);
   uint32_t end = (((length - 1) >> 4) + 1) << 4;
   uint32_t i, cnt;
   cnt = end >> 4;
@@ -115,7 +116,6 @@ int kseq_read(kseq_t *seq)
   seq->name.l = strlen(seq->name.s);
   seq->offset += (end >> 2);
 
-  rewind(seq->f->f);
   free(tmp);
   return seq->seq.l;
 }

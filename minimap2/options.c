@@ -45,6 +45,7 @@ void mm_mapopt_init(mm_mapopt_t *opt)
 
 	opt->pe_ori = 0; // FF
 	opt->pe_bonus = 33;
+	opt->ovlp_len = 500;
 }
 
 void mm_mapopt_update(mm_mapopt_t *opt, const mm_idx_t *mi)

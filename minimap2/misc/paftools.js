@@ -1,6 +1,6 @@
 #!/usr/bin/env k8
 
-var paftools_version = '2.14-r885-dirty';
+var paftools_version = '2.15-r905';
 
 /*****************************
  ***** Library functions *****
@@ -801,11 +801,12 @@ function paf_asmstat(args)
 
 function paf_asmgene(args)
 {
-	var c, opt = { min_cov:0.99, min_iden:0.99 }, print_err = false;
-	while ((c = getopt(args, "i:c:e")) != null)
+	var c, opt = { min_cov:0.99, min_iden:0.99 }, print_err = false, auto_only = false;
+	while ((c = getopt(args, "i:c:ea")) != null)
 		if (c == 'i') opt.min_iden = parseFloat(getopt.arg);
 		else if (c == 'c') opt.min_cov = parseFloat(getopt.arg);
 		else if (c == 'e') print_err = true;
+		else if (c == 'a') auto_only = true;
 
 	var n_fn = args.length - getopt.ind;
 	if (n_fn < 2) {
@@ -813,6 +814,7 @@ function paf_asmgene(args)
 		print("Options:");
 		print("  -i FLOAT     min identity [" + opt.min_iden + "]");
 		print("  -c FLOAT     min coverage [" + opt.min_cov + "]");
+		print("  -a           only evaluate genes mapped to the autosomes");
 		print("  -e           print fragmented/missing genes");
 		exit(1);
 	}
@@ -858,7 +860,7 @@ function paf_asmgene(args)
 			if (i == getopt.ind) refpos[t[0]] = [t[0], t[1], t[5], t[7], t[8]];
 			if (gene[t[0]] == null) gene[t[0]] = [];
 			if (a.length && t[0] != a[0][0]) {
-				gene[t[0]][i - getopt.ind] = process_query(opt, a);
+				gene[a[0][0]][i - getopt.ind] = process_query(opt, a);
 				a = [];
 			}
 			a.push([t[0], ql, qs, qe, mlen, blen]);
@@ -895,6 +897,7 @@ function paf_asmgene(args)
 	for (var g in gene) {
 		if (gene[g][0] == null || gene[g][0][0] != 1) continue;
 		if (gene_nr[g] == null) continue;
+		if (auto_only && /^(chr)?[XY]$/.test(refpos[g][2])) continue;
 		for (var i = 0; i < n_fn; ++i) {
 			if (gene[g][i] == null) {
 				rst[4][i]++;
@@ -1195,6 +1198,105 @@ function paf_bedcov(args)
 
 	warn("# target bases: " + tot_len);
 	warn("# target bases overlapping regions: " + hit_len + ' (' + (100.0 * hit_len / tot_len).toFixed(2) + '%)');
+}
+
+function paf_vcfpair(args)
+{
+	var c, is_male = false, sample = 'syndip', hgver = null;
+	var PAR = { '37':[[0, 2699520], [154931043, 155260560]] };
+	while ((c = getopt(args, "ms:g:")) != null) {
+		if (c == 'm') is_male = true;
+		else if (c == 's') sample = getopt.arg;
+		else if (c == 'g') hgver = getopt.arg;
+	}
+	if (is_male && (hgver == null || PAR[hgver] == null))
+		throw("for a male, -g must be specified to properly handle PARs on chrX");
+
+	if (getopt.ind == args.length) {
+		print("Usage: paftools.js vcfpair [options] <in.pair.vcf>");
+		print("Options:");
+		print("  -m       the sample is male");
+		print("  -g STR   human genome version '37' []");
+		print("  -s STR   sample name [" + sample + "]");
+		exit(1);
+	}
+
+	var re_ctg = is_male? /^(chr)?([0-9]+|X|Y)$/ : /^(chr)?([0-9]+|X)$/;
+	var label = ['1', '2'];
+	var buf = new Bytes();
+	var file = args[getopt.ind] == '-'? new File() : new File(args[getopt.ind]);
+	while (file.readline(buf) >= 0) {
+		var m, line = buf.toString();
+		if (line.charAt(0) == '#') {
+			if (/^##(source|reference)=/.test(line)) continue;
+			if ((m = /^##contig=.*ID=([^\s,]+)/.exec(line)) != null) {
+				if (!re_ctg.test(m[1])) continue;
+			} else if (/^#CHROM/.test(line)) {
+				var t = line.split("\t");
+				--t.length;
+				t[t.length-1] = sample;
+				line = t.join("\t");
+				print('##FILTER=<ID=HET1,Description="Heterozygous in the first haplotype">');
+				print('##FILTER=<ID=HET2,Description="Heterozygous in the second haplotype">');
+				print('##FILTER=<ID=GAP1,Description="Uncalled in the first haplotype">');
+				print('##FILTER=<ID=GAP2,Description="Uncalled in the second haplotype">');
+			}
+			print(line);
+			continue;
+		}
+		var t = line.split("\t");
+		if (!re_ctg.test(t[0])) continue;
+		var GT = null, AD = null, FILTER = [], HT = [null, null];
+		for (var i = 0; i < 2; ++i) {
+			if ((m = /^(\.|[0-9]+)\/(\.|[0-9]+):(\S+)/.exec(t[9+i])) == null) {
+				warn(line);
+				throw Error("malformatted VCF");
+			}
+			var s = m[3].split(",");
+			if (AD == null) {
+				AD = [];
+				for (var j = 0; j < s.length; ++j)
+					AD[j] = 0;
+			}
+			for (var j = 0; j < s.length; ++j)
+				AD[j] += parseInt(s[j]);
+			if (m[1] == '.') {
+				FILTER.push('GAP' + label[i]);
+				HT[i] = '.';
+			} else if (m[1] != m[2]) {
+				FILTER.push('HET' + label[i]);
+				HT[i] = '.';
+			} else HT[i] = m[1];
+		}
+		--t.length;
+		// test if this is in a haploid region
+		var hap = 0, st = parseInt(t[1]), en = st + t[3].length;
+		if (is_male) {
+			if (/^(chr)?X/.test(t[0])) {
+				if (hgver != null && PAR[hgver] != null) {
+					var r = PAR[hgver], in_par = false;
+					for (var i = 0; i < r.length; ++i)
+						if (r[i][0] <= st && en <= r[i][1])
+							in_par = true;
+					hap = in_par? 0 : 2;
+				}
+			} else if (/^(chr)?Y/.test(t[0])) {
+				hap = 1;
+			}
+		}
+		// special treatment for haploid regions
+		if (hap > 0 && FILTER.length == 1) {
+			if ((hap == 2 && FILTER[0] == "GAP1") || (hap == 1 && FILTER[0] == "GAP2"))
+				FILTER.length = 0;
+		}
+		// update VCF
+		t[5] = 30; // fake QUAL
+		t[6] = FILTER.length? FILTER.join(";") : ".";
+		t[9] = HT.join("|") + ":" + AD.join(",");
+		print(t.join("\t"));
+	}
+	file.close();
+	buf.destroy();
 }
 
 /**********************
@@ -2396,6 +2498,7 @@ function main(args)
 	else if (cmd == 'asmstat') paf_asmstat(args);
 	else if (cmd == 'asmgene') paf_asmgene(args);
 	else if (cmd == 'liftover' || cmd == 'liftOver') paf_liftover(args);
+	else if (cmd == 'vcfpair') paf_vcfpair(args);
 	else if (cmd == 'call') paf_call(args);
 	else if (cmd == 'mapeval') paf_mapeval(args);
 	else if (cmd == 'bedcov') paf_bedcov(args);

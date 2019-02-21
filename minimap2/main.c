@@ -6,7 +6,7 @@
 #include "mmpriv.h"
 #include "ketopt.h"
 
-#define MM_VERSION "2.14-r884"
+#define MM_VERSION "2.15-r905"
 
 #ifdef __linux__
 #include <sys/resource.h>
@@ -24,7 +24,6 @@ void liftrlimit() {}
 
 char **bases_arr = NULL;
 idx_t *idx_ptr = NULL;
-bytes_t *encode_tbl = NULL;
 
 static ko_longopt_t long_options[] = {
 	{ "bucket-bits",    ko_required_argument, 300 },
@@ -65,6 +64,7 @@ static ko_longopt_t long_options[] = {
 	{ "no-end-flt",     ko_no_argument,       335 },
 	{ "hard-mask-level",ko_no_argument,       336 },
 	{ "cap-sw-mem",     ko_required_argument, 337 },
+	{ "max-qlen",       ko_required_argument, 338 },
 	{ "help",           ko_no_argument,       'h' },
 	{ "max-intron-len", ko_required_argument, 'G' },
 	{ "version",        ko_no_argument,       'V' },
@@ -132,33 +132,13 @@ void get_idx_offset(const char *fn, idx_t *ptr)
 		k = kh_put(idx_offset, ptr->h, i, &absent);
 		kh_val(ptr->h, k) = offset;
 	}
+	free(line);
 	free(idx_name); fclose(stream);
-}
-
-bytes_t *init_encode_table(uint32_t n)
-{
-  int i, j, k, m;
-  uint8_t tmp;
-  bytes_t *ret = (bytes_t *)malloc(sizeof(bytes_t) * n);
-  for(i = 0; i < n; i++) {
-    k = i; j = 28; m = 0;
-    if (k <= 127) ret[i].bytes[m++] = (k & 127);
-    else {
-      while (j >= 0) {
-        tmp = ((k >> j) & 127);
-        if (tmp > 0 || m > 0) ret[i].bytes[m++] = (tmp | 128);
-        j -= 7;
-      }
-      ret[i].bytes[m - 1] &= 127;
-    }
-    ret[i].n = m;
-  }
-  return ret;
 }
 
 int main(int argc, char *argv[])
 {
-	const char *opt_str = "2aSDw:k:K:t:r:f:Vv:g:G:I:d:XT:s:x:Hcp:M:n:z:A:B:O:E:m:N:Qu:R:hF:LC:yYPJ";
+	const char *opt_str = "2aSDw:k:K:t:r:f:Vv:g:G:I:d:XT:s:x:Hcp:M:n:z:A:B:O:E:m:N:Qu:R:hF:LC:yYPJl:";
 	ketopt_t o = KETOPT_INIT;
 	mm_mapopt_t opt;
 	mm_idxopt_t ipt;
@@ -192,6 +172,7 @@ int main(int argc, char *argv[])
 	while ((c = ketopt(&o, argc, argv, 1, opt_str, long_options)) >= 0) {
 		if (c == 'w') ipt.w = atoi(o.arg);
 		else if (c == 'J') opt.mode = 1;
+		else if (c == 'l') opt.ovlp_len = (int)mm_parse_num(o.arg);
 		else if (c == 'k') ipt.k = atoi(o.arg);
 		else if (c == 'H') ipt.flag |= MM_I_HPC;
 		else if (c == 'd') fnw = o.arg; // the above are indexing related options, except -I
@@ -253,6 +234,7 @@ int main(int argc, char *argv[])
 		else if (c == 335) opt.flag |= MM_F_NO_END_FLT; // --no-end-flt
 		else if (c == 336) opt.flag |= MM_F_HARD_MLEVEL; // --hard-mask-level
 		else if (c == 337) opt.max_sw_mat = mm_parse_num(o.arg); // --cap-sw-mat
+		else if (c == 338) opt.max_qlen = mm_parse_num(o.arg); // --max-qlen
 		else if (c == 314) { // --frag
 			yes_or_no(&opt, MM_F_FRAG_MODE, o.longidx, o.arg, 1);
 		} else if (c == 315) { // --secondary
@@ -343,6 +325,7 @@ int main(int argc, char *argv[])
 		fprintf(fp_help, "    -X           skip self and dual mappings (for the all-vs-all mode)\n");
 		fprintf(fp_help, "    -p FLOAT     min secondary-to-primary score ratio [%g]\n", opt.pri_ratio);
 		fprintf(fp_help, "    -N INT       retain at most INT secondary alignments [%d]\n", opt.best_n);
+		fprintf(fp_help, "    -l INT       minimum overlap length [%d]\n", opt.ovlp_len);
 		fprintf(fp_help, "  Alignment:\n");
 		fprintf(fp_help, "    -A INT       matching score [%d]\n", opt.a);
 		fprintf(fp_help, "    -B INT       mismatch penalty [%d]\n", opt.b);
@@ -391,7 +374,6 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	encode_tbl = init_encode_table(NUM_LIMIT);
 	idx_ptr = (idx_t *)malloc(sizeof(idx_t));
 	if (idx_rdr->is_idx) idx_ptr->is_idx = 1;
 	else get_idx_offset(argv[o.ind], idx_ptr);
@@ -433,6 +415,8 @@ int main(int argc, char *argv[])
 	if (opt.split_prefix)
 		mm_split_merge(argc - (o.ind + 1), (const char**)&argv[o.ind + 1], &opt, n_parts);
 
+	mm_write_ovl(NULL, NULL, NULL);
+
 	if (fflush(stdout) == EOF) {
 		fprintf(stderr, "[ERROR] failed to write the results\n");
 		exit(EXIT_FAILURE);
@@ -458,7 +442,6 @@ int main(int argc, char *argv[])
 		kh_destroy(idx_offset, idx_ptr->h);
 		free(idx_ptr);
 	}
-	free(encode_tbl);
 
 	return 0;
 }

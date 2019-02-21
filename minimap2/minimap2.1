@@ -1,4 +1,4 @@
-.TH minimap2 1 "5 November 2018" "minimap2-2.14 (r883)" "Bioinformatics tools"
+.TH minimap2 1 "10 January 2019" "minimap2-2.15 (r905)" "Bioinformatics tools"
 .SH NAME
 .PP
 minimap2 - mapping and alignment between collections of DNA sequences
@@ -458,6 +458,13 @@ memory.
 .BR --secondary = yes | no
 Whether to output secondary alignments [yes]
 .TP
+.BI --max-qlen \ NUM
+Filter out query sequences longer than
+.IR NUM .
+.TP
+.B --paf-no-hit
+In PAF, output query name and length for an unmapped sequence.
+.TP
 .B --version
 Print version number to stdout
 .SS Preset options
@@ -604,6 +611,7 @@ ts	A	Transcript strand (splice mode only)
 cg	Z	CIGAR string (only in PAF)
 cs	Z	Difference string
 dv	f	Approximate per-base sequence divergence
+de	f	Gap-compressed per-base sequence divergence
 .TE
 
 .PP

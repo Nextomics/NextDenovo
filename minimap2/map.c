@@ -1,3 +1,4 @@
+#define _FILE_OFFSET_BITS 64
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -284,6 +285,7 @@ void mm_map_frag(const mm_idx_t *mi, int n_segs, const int *qlens, const char **
 		qlen_sum += qlens[i], n_regs[i] = 0, regs[i] = 0;
 
 	if (qlen_sum == 0 || n_segs <= 0 || n_segs > MM_MAX_SEG) return;
+	if (opt->max_qlen > 0 && qlen_sum > opt->max_qlen) return;
 
 	hash  = qname? __ac_X31_hash_string(qname) : 0;
 	hash ^= __ac_Wang_hash(qlen_sum) + __ac_Wang_hash(opt->seed);
@@ -414,7 +416,7 @@ char *bit2seq(FILE *fp, int rev, uint64_t offset, uint32_t start, uint32_t end)
   uint32_t i, cnt = (end_align - start_align) >> 4;
   char *ret = (char *)malloc(sizeof(char) * (end - start + 2));
   char *buffer = (char *)malloc(sizeof(char) * (end_align - start_align + 1));
-  fseek(fp, offset + (start_align >> 2), SEEK_SET);
+  fseeko(fp, offset + (start_align >> 2), SEEK_SET);
   uint32_t *tmp = (uint32_t *)malloc(sizeof(uint32_t) * cnt);
   fread(tmp, sizeof(uint32_t), cnt, fp);
   for(i = 0; i < cnt; i++) {
@@ -433,7 +435,6 @@ char *bit2seq(FILE *fp, int rev, uint64_t offset, uint32_t start, uint32_t end)
     if (l & 1)  ret[l >> 1] = "ACGT"[3 - nt_table[(uint8_t)ret[l >> 1]]];
   }
   ret[end - start + 1] = '\0';
-  rewind(fp);
   free(buffer); free(tmp);
   return ret;
 }
@@ -713,8 +714,6 @@ static void merge_hits(step_t *s)
 	km_destroy(km);
 }
 
-extern bytes_t *encode_tbl;
-
 static void *worker_pipeline(void *shared, int step, void *in)
 {
 	int i, j, k;
@@ -783,8 +782,10 @@ static void *worker_pipeline(void *shared, int step, void *in)
 							continue;
 						if (p->opt->flag & MM_F_OUT_SAM)
 							mm_write_sam2(&p->str, mi, t, i - seg_st, j, s->n_seg[k], &s->n_reg[seg_st], (const mm_reg1_t*const*)&s->reg[seg_st], km, p->opt->flag);
-						else
-							mm_write_ovl(mi, t, r, encode_tbl);
+						else {
+							if (r->qe - r->qs >= p->opt->ovlp_len)
+								mm_write_ovl(mi, t, r);
+						}
 //						mm_err_puts(p->str.s);
 					}
 				} else if (p->opt->flag & (MM_F_OUT_SAM|MM_F_PAF_NO_HIT)) { // output an empty hit, if requested

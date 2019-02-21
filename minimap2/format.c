@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "kalloc.h"
 #include "mmpriv.h"
+#include "../util/ovl.h"
 
 static char mm_rg_id[256];
 
@@ -261,6 +262,18 @@ int mm_gen_MD(void *km, char **buf, int *max_len, const mm_idx_t *mi, const mm_r
 	return mm_gen_cs_or_MD(km, buf, max_len, mi, r, seq, 1, 0);
 }
 
+double mm_event_identity(const mm_reg1_t *r)
+{
+	int32_t i, n_gapo = 0, n_gap = 0;
+	if (r->p == 0) return -1.0f;
+	for (i = 0; i < r->p->n_cigar; ++i) {
+		int32_t op = r->p->cigar[i] & 0xf, len = r->p->cigar[i] >> 4;
+		if (op == 1 || op == 2)
+			++n_gapo, n_gap += len;
+	}
+	return (double)r->mlen / (r->blen - r->p->n_ambi - n_gap + n_gapo);
+}
+
 static inline void write_tags(kstring_t *s, const mm_reg1_t *r)
 {
 	int type;
@@ -273,10 +286,17 @@ static inline void write_tags(kstring_t *s, const mm_reg1_t *r)
 	}
 	mm_sprintf_lite(s, "\ttp:A:%c\tcm:i:%d\ts1:i:%d", type, r->cnt, r->score);
 	if (r->parent == r->id) mm_sprintf_lite(s, "\ts2:i:%d", r->subsc);
-	if (r->div >= 0.0f && r->div <= 1.0f) {
-		char buf[8];
+	if (r->p) {
+		char buf[16];
+		double div;
+		div = 1.0 - mm_event_identity(r);
+		if (div == 0.0) buf[0] = '0', buf[1] = 0;
+		else snprintf(buf, 16, "%.4f", 1.0 - mm_event_identity(r));
+		mm_sprintf_lite(s, "\tde:f:%s", buf);
+	} else if (r->div >= 0.0f && r->div <= 1.0f) {
+		char buf[16];
 		if (r->div == 0.0f) buf[0] = '0', buf[1] = 0;
-		else sprintf(buf, "%.4f", r->div);
+		else snprintf(buf, 16, "%.4f", r->div);
 		mm_sprintf_lite(s, "\tdv:f:%s", buf);
 	}
 	if (r->split) mm_sprintf_lite(s, "\tzd:i:%d", r->split);
@@ -523,50 +543,23 @@ void mm_write_sam(kstring_t *s, const mm_idx_t *mi, const mm_bseq1_t *t, const m
 	mm_write_sam2(s, mi, t, 0, i, 1, &n_regs, &regs, NULL, 0);
 }
 
-void mm_write_ovl(const mm_idx_t *mi, const mm_bseq1_t *t, const mm_reg1_t *r, bytes_t *arr)
+void mm_write_ovl(const mm_idx_t *mi, const mm_bseq1_t *t, const mm_reg1_t *r)
 {
   static prev_t id = { 0, 0 };
+  static bytes_t *encode_tbl = NULL;
+  static buffer_t *buf = NULL;
+
+  if (!mi) {
+    flush_buffer(stdout, buf);
+    destroy_table(encode_tbl);
+    return;
+  }
+  if (!encode_tbl) encode_tbl = init_encode_table(NUM_LIMIT);
+  if (!buf) buf = init_buffer(ECBUFSIZE);
 
   uint32_t qname, rev, qs, qe, tname, ts, te;
   qname = strtoul(t->name, NULL, 10), rev = r->rev, qs = r->qs, qe = r->qe;
   tname = strtoul(mi->seq[r->rid].name, NULL, 10), ts = r->rs, te = r->re;
 
-  int i, j, m, n, tmp;
-  uint32_t offset_qname, offset_tname, offset_length;
-  uint8_t buffer[36];
-
-  uint32_t qlen, tlen;
-  qlen = qe - qs, tlen = te - ts;
-
-  if (qname >= id.prev_qname) offset_qname = qname - id.prev_qname;
-  else rev |= 0b10, offset_qname = id.prev_qname - qname;
-  id.prev_qname = qname;
-
-  if (tname >= id.prev_tname)  offset_tname = tname - id.prev_tname;
-  else rev |= 0b100, offset_tname = id.prev_tname - tname;
-  id.prev_tname = tname;
-
-  if (qlen >= tlen) offset_length = qlen - tlen;
-  else rev |= 0b1000, offset_length = tlen - qlen;
-
-  uint32_t result[7] = { offset_qname, rev, qs, qlen, offset_tname, ts, offset_length };
-  n = 0;
-  for(i = 0; i < 7; i++) {
-    if (result[i] < NUM_LIMIT) {
-      memcpy(buffer + n, arr[result[i]].bytes, arr[result[i]].n);
-      n += arr[result[i]].n;
-    } else {
-      j = 28, m = 0;
-      uint8_t buffer1[5];
-      while (j >= 0) {
-        tmp = ((result[i] >> j) & 127);
-        if (tmp > 0 || m > 0) buffer1[m++] = (tmp | 128);
-        j -= 7;
-      }
-      buffer1[m - 1] &= 127;
-      memcpy(buffer + n, buffer1, m);
-      n += m;
-    }
-  }
-  fwrite(buffer, sizeof(uint8_t), n, stdout);
+  encode_ovl(stdout, encode_tbl, &id, qname, rev, qs, qe, tname, ts, te, buf);
 }

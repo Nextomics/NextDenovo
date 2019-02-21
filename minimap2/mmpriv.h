@@ -6,8 +6,6 @@
 #include "bseq.h"
 #include "khash.h"
 
-#define NUM_LIMIT 100000000UL
-
 #define MM_PARENT_UNSET   (-1)
 #define MM_PARENT_TMP_PRI (-2)
 
@@ -46,16 +44,6 @@ typedef struct {
 	khash_t(idx_offset) *h;
 } idx_t;
 
-typedef struct {
-  uint8_t bytes[5];
-  int n;
-} bytes_t;
-
-typedef struct {
-  uint32_t prev_qname;
-  uint32_t prev_tname;
-} prev_t;
-
 #ifndef KSTRING_T
 #define KSTRING_T kstring_t
 typedef struct __kstring_t {
@@ -85,7 +73,7 @@ void mm_write_paf(kstring_t *s, const mm_idx_t *mi, const mm_bseq1_t *t, const m
 void mm_write_sam(kstring_t *s, const mm_idx_t *mi, const mm_bseq1_t *t, const mm_reg1_t *r, int n_regs, const mm_reg1_t *regs);
 void mm_write_sam2(kstring_t *s, const mm_idx_t *mi, const mm_bseq1_t *t, int seg_idx, int reg_idx, int n_seg, const int *n_regs, const mm_reg1_t *const* regs, void *km, int opt_flag);
 
-void mm_write_ovl(const mm_idx_t *mi, const mm_bseq1_t *t, const mm_reg1_t *r, bytes_t *arr);
+void mm_write_ovl(const mm_idx_t *mi, const mm_bseq1_t *t, const mm_reg1_t *r);
 
 void mm_idxopt_init(mm_idxopt_t *opt);
 const uint64_t *mm_idx_get(const mm_idx_t *mi, uint64_t minier, int *n);

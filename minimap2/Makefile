@@ -98,7 +98,7 @@ bseq.o: bseq.h kvec.h kalloc.h bit_seq.h
 chain.o: minimap.h mmpriv.h bseq.h kalloc.h
 esterr.o: mmpriv.h minimap.h bseq.h
 example.o: minimap.h kseq.h
-format.o: kalloc.h mmpriv.h minimap.h bseq.h
+format.o: kalloc.h mmpriv.h minimap.h bseq.h ../util/ovl.h
 hit.o: mmpriv.h minimap.h bseq.h kalloc.h khash.h
 index.o: kthread.h bseq.h minimap.h mmpriv.h kvec.h kalloc.h khash.h
 kalloc.o: kalloc.h

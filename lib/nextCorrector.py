@@ -28,6 +28,9 @@ class index_tag (Structure):
 		("offset", c_uint64),
 	]
 
+class buffer_t (Structure):
+	pass
+
 class ovl (Structure):
 	_fields_ = [
 		("ovl", c_void_p),
@@ -36,6 +39,7 @@ class ovl (Structure):
 		("decode_tbl", POINTER(c_uint32)),
 		("handle_index", c_int),
 		("indexs", POINTER(index_tag)),
+		("bitbuf", POINTER(buffer_t))
 	]
 
 class ids (Structure):
@@ -54,7 +58,7 @@ OVL = CDLL(os.path.dirname(os.path.realpath(__file__)) + '/' + "ovlSeq.so")
 OVL.init_ovls.argtypes = [c_char_p, c_char_p]
 OVL.init_ovls.restype = POINTER(ovl)
 OVL.destory_ovls.argtypes = [POINTER(ovl)]
-OVL.decode_ovl.argtypes = [POINTER(ovl), POINTER(ids), POINTER(c_uint32)]
+OVL.decode_ovl.argtypes = [c_void_p, POINTER(c_uint32), POINTER(ids), POINTER(c_uint32), POINTER(buffer_t)]
 OVL.decode_ovl.restype = c_int
 OVL.bit2seq.argtypes = [POINTER(ovl), POINTER(c_uint32)]
 OVL.bit2seq.restype = c_void_p
@@ -95,7 +99,7 @@ def read_seq_data(args, corrected_seeds):
 	tmp_arr = (c_uint32 * 7)()
 	last_seed = -1
 
-	while OVL.decode_ovl(ovls, byref(ids_), tmp_arr) >= 0:
+	while OVL.decode_ovl(ovls.contents.ovl, ovls.contents.decode_tbl, byref(ids_), tmp_arr, ovls.contents.bitbuf) >= 0:
 		t_name, _, t_s, t_e, q_name, q_s, q_e = tmp_arr
 		if seed_name == '+' or (last_seed != -1 and t_name != last_seed):
 			if total_length / seed_length >= args.min_cov_seed:
@@ -170,7 +174,7 @@ def worker(args):
 
 def start():
 	log.info(
-		'Start a correctted worker in %d from parent %d' %
+		'Start a cns worker in %d from parent %d' %
 		(os.getpid(), os.getppid()))
 
 def main(args):

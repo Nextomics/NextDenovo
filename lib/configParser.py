@@ -51,6 +51,8 @@ class ConfigParser:
 			self.cfg['correction_options'] = '-p 10'
 		if 'sge_options' not in self.cfg:
 			self.cfg['sge_options'] = ''
+		if 'sort_options' not in self.cfg:
+			self.cfg['sort_options'] = '-m 40g -t 8 -k 40'
 		if 'sge_queue' not in self.cfg:
 			self.cfg['sge_queue'] = parse_options_value(self.cfg['sge_options'], '-q').split(',') if '-q' in self.cfg['sge_options'] else ''
 
@@ -86,6 +88,13 @@ class ConfigParser:
 
 		# if '-min_len_seed' not in self.cfg['correction_options']:
 		# 	self.cfg['correction_options'] += ' -min_len_seed ' + self.cfg['seed_cutoff']
+
+		if '-t' not in self.cfg['sort_options']:
+			self.cfg['sort_options'] += ' -t 8'
+		if '-m' not in self.cfg['sort_options']:
+			self.cfg['sort_options'] += ' -m 40g'
+		self.cfg['sort_threads'] = int(parse_options_value(self.cfg['sort_options'], '-t'))
+		self.cfg['sort_mem'] = parse_options_value(self.cfg['sort_options'], '-m')
 
 		if 'minimap2_options' not in self.cfg:
 			log.error('Error, failed find option: minimap2_options')

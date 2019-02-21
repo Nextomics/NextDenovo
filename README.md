@@ -20,7 +20,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 
 * **INPUT** 
 
-```
+<pre>
 	[General]                # global options
 	job_type = sge           # [sge or local]. (default: sge)
 	job_prefix = nextDenovo  # prefix tag for jobs. (default: nextDenovo)
@@ -47,10 +47,10 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	                         # minimap2 options, used to set PacBio/Nanopore read overlap (<b>required</b>)
 	correction_options = -p 10            
 	                         # nextCorrector options, see below. (default: -p 10)
-```
+</pre>
 
 
-```
+<pre>
 	[sort_options]
 	-t                       # number of threads to use. [8]
 	-m                       # set maximum available buffer size, larger buffer size will accelerate sort process, suffix K/M/G. [40G]
@@ -62,7 +62,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	-fast                    # 0.5-1 times faster mode with a little lower accuracy. (default: False)
 	-max_lq_length           # maximum length of a continuous low quality region in a corrected seed, larger max_lq_length will produce
 	                           more corrected data with lower accuracy. (default: auto [pb/1k, ont/10k])
-```
+</pre>
 
 * **OUTPUT**    
 cns.fasta with fasta format, the fasta header includes primary seqID, length, approximate corrected bases percentage (%). The two flanking un-corrected sequences are trimed.

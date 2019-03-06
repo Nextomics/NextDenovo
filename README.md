@@ -6,7 +6,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 > * **NextCorrect**  (Binary released)  
 >   This package aims to correct the TGS long reads with approximately 15% sequencing errors. The design philosophy is from [Falcon](https://github.com/PacificBiosciences/FALCON). After correction, for nanopore data, the identity is about 97-98%, most of remaining errors are located in the homopolymer or tandem repeat regions.
 >
-> * **NextGraphy**   (ongoing)    
+> * **NextGraph**   (ongoing)    
 >      This package aims to construct the string graph with corrected data. 
 
 * **INSTALL**  

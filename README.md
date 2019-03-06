@@ -35,7 +35,7 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	                         # options used in SGE.
 
 	[correct_option]         # options using only in corrected step.
-	read_cuoff = 1k          # filted reads with length < read_cuoff. (default: 1k)
+	read_cuoff = 1k          # filter reads with length < read_cuoff. (default: 1k)
 	seed_cutoff = 25k        # minimum seed length. (<b>required</b>)
 	seed_cutfiles = 10       # split seed reads into ${seed_cutfiles} subfiles. (default: ${pa_correction})
 	blocksize = 10g          # block size for parallel running. (default: 10g)

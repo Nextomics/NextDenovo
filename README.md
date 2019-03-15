@@ -76,4 +76,4 @@ For additional help, please send an email to huj_at_grandomics_dot_com.
 * **COPYRIGHT**    
 NextDenovo is freely available for academic use and other non-commercial use. For commercial use, please contact [NextOmics](https://www.nextomics.cn/en/).
 
-* **STAR**  
+* **PLEASE STAR AND THANKS**  

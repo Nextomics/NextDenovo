@@ -10,8 +10,8 @@ from kit import *
 
 __all__ = ['Task', 'Run']
 
+drmaa = None
 log = plog()
-
 class Task(object):
 
 	def __init__(self, path, group = 1, max_subtask = 300, prefix = 'job', bash = '/bin/bash', convertpath = True): # need add output input
@@ -139,6 +139,7 @@ class Task(object):
 				subtask += 'touch ' + d + subtask_dir + '/' + subtask_file + '.done\n'
 				with open(d + subtask_dir + '/' + subtask_file, 'w') as OUT:
 					print >>OUT, subtask
+					os.chmod(d + subtask_dir + '/' + subtask_file, 0o744)
 			self.subtasks.append(d + subtask_dir + '/' + subtask_file)
 
 	def set_run(self, max_pa_jobs = 5, bash = '/bin/bash', job_type = 'sge', interval = 30, cpu = 1, vf = '', sge_options = ''):
@@ -146,7 +147,7 @@ class Task(object):
 
 class Run(object):
 	"""docstring for Run"""
-	RUNNINGTASK = {'sge':[], 'local':[]}
+	RUNNINGTASK = {'sge':[], 'local':[], 'drmaa':None}
 
 	def __init__(self, tasks, max_pa_jobs, bash, job_type, interval, cpu, vf, sge_options):
 		self.tasks = tasks
@@ -159,18 +160,21 @@ class Run(object):
 		self.bash = str(bash)
 		self.sge_options = str(sge_options)
 		self.option = self._getoption()
+		self.drmaa = ''
 		self.check()
 		
 	def start(self):
 		log.info('total jobs: ' + str(len(self.unfinished_tasks)))
-		if self.job_type == 'sge':
-			self._sge()
-		else:
+		if self.job_type == 'local':
 			self._local()
+		else:
+			global drmaa
+			import drmaa as drmaa
+			self._sge()
 
 	def rerun(self):
 		# Here we can analysis log file to check the reason of unfinished jobs, and then decided how to rerun unfinished jobs.
-		if self.job_type == 'sge':
+		if self.job_type != 'local':
 			vfs = re.split(r'(\d+)', self.vf)
 			self.vf = str(int(int(vfs[-2]) * 1.5)) + vfs[-1] #most unfinished jobs were caused by Memory in SGE system. TODO: should avoid larger the total memory of computer-node
 			self.option = self._getoption()
@@ -185,60 +189,70 @@ class Run(object):
 		return False if self.unfinished_tasks else True
 
 	@classmethod
-	def kill(cls, signum, frame):
-		log.warning('Accept killed signal and kill all running jobs, please waite...')
-		for pid in Run.RUNNINGTASK['sge']:
-			os.popen('qdel ' + pid)
-		for pid in Run.RUNNINGTASK['local']:
-			os.kill(pid, signal.SIGKILL)
+	def kill(self, signum, frame):
+		log.warning('Accept killed signal and kill all running jobs, please wait...')
+		if Run.RUNNINGTASK['sge']:
+			for jobid in Run.RUNNINGTASK['sge']:  
+				try:
+					Run.RUNNINGTASK['drmaa'].control(jobid, drmaa.JobControlAction.TERMINATE)
+				except Exception:
+					pass
+			Run.RUNNINGTASK['drmaa'].exit()
+		else:
+			for jobid in Run.RUNNINGTASK['local']:
+				os.kill(jobid, signal.SIGKILL)
 		Run.RUNNINGTASK = {'sge':[], 'local':[]}
 		log.warning('Kill running jobs done')
 		sys.exit(1)
 
-	def _sge(self):
+	def _sge(self):		
 		j = 0
-		runnedJop = []
+		Run.RUNNINGTASK['sge'] = []
+		Run.RUNNINGTASK['drmaa'] = self.drmaa = drmaa.Session()
+		self.drmaa.initialize()
+		jt = self.drmaa.createJobTemplate()
+		jt.jobEnvironment = os.environ.copy()
+		jt.nativeSpecification = self.option
+
 		while j < len(self.unfinished_tasks):
 			task = self.unfinished_tasks[j]
-			if j < self.max_pa_jobs or len(self._check_running(runnedJop)) <= self.max_pa_jobs:
-				qsubCmd = self.option + ' -o ' + task + '.o ' + '-e ' + task + '.e ' + task
-				jobId = os.popen(qsubCmd).read().strip().split()[2]
-				runnedJop.append(jobId)
-				Run.RUNNINGTASK['sge'].append(jobId)
-				log.info('Throw jobID:[' + jobId + '] jobCmd:['  + qsubCmd + '] in the qsub_cycle.')
+			if j < self.max_pa_jobs or self._check_running <= self.max_pa_jobs:
+				jt.remoteCommand = task
+				jt.outputPath = ':' + task + '.o'
+				jt.errorPath = ':' + task + '.e'
+				jt.workingDirectory = os.path.dirname(task)
+				jobid = self.drmaa.runJob(jt)
+				Run.RUNNINGTASK['sge'].append(jobid)
+				log.info('Throw jobID:[' + jobid + '] jobCmd:['  + task + '] in the ' + self.job_type + '_cycle.')
 				j += 1
 			else:
 				time.sleep(self.interval)
 		else:
 			while (1):
-				if len(self._check_running(runnedJop)) != 0:
+				if self._check_running:
 					time.sleep(self.interval)
 				else:
 					break
 
-	def _check_running(self, runnedJop):
-		runningJop = []
-		user = os.popen('whoami').read().strip()
-		qstatContent = os.popen('qstat -u ' + user).read().strip().split('\n')
-		for i in qstatContent:
-			i = i.strip().split()
-			if i and i[0] in runnedJop and i[3] == user:
-				if i[4] in ['qw', 'r', 't', 'hqw']:
-					runningJop.append(i[0])
-				elif i[4] == 'Eqw' or (len(i) > 7 and i[4] != 'qw' and i[7].split('@')[1] in self._get_died_nodes):
-					log.error('Died job: ' + i[0] + ', ' + ' '.join(i))
-					log.error('Delete job: ' + i[0])
-					os.popen('qdel ' + i[0])
-		return runningJop
+		self.drmaa.deleteJobTemplate(jt)
+ 		self.drmaa.exit()
 
 	@property
-	def _get_died_nodes(self):
-		died_nodes = []
-		for node in os.popen("qhost").read().split('\n'):
-			nodes = node.strip().split()
-			if len(nodes) > 9 and '-' in nodes[6:9]:
-				died_nodes.append(nodes)
-		return died_nodes
+	def _check_running(self):
+		runningJop = 0
+		pjobs = Run.RUNNINGTASK['sge']
+		for jobid in pjobs:
+			if self.drmaa.jobStatus(jobid) not in [drmaa.JobState.UNDETERMINED, \
+				drmaa.JobState.DONE, drmaa.JobState.FAILED]:
+				runningJop += 1
+			else:
+				try:
+					self.drmaa.wait(jobid, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+				except Exception:
+					pass
+				finally:
+					Run.RUNNINGTASK['sge'].remove(jobid)
+		return runningJop
 
 	def _local(self):
 		subids = []
@@ -263,12 +277,4 @@ class Run(object):
 			Run.RUNNINGTASK['local'].remove(subid)
 
 	def _getoption(self):
-		cmd = self.sge_options if 'qsub' in self.sge_options else 'qsub ' + self.sge_options
-		
-		if '-S' not in self.sge_options:
-			cmd += ' -S {bash}'
-		if self.vf and ('virtual_free' not in self.sge_options and 'vf' not in self.sge_options):
-			cmd += ' -l virtual_free={vf}'
-		if '-pe' not in self.sge_options:
-			cmd + ' -pe smp {cpu}'
-		return cmd.format(cpu=self.cpu, vf=self.vf, bash=self.bash)
+		return self.sge_options.format(cpu=self.cpu, vf=self.vf, bash=self.bash)

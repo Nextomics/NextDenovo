@@ -8,10 +8,29 @@ log = plog()
 
 class ConfigParser:
 	def __init__(self, cfgfile):
-		self.cfg = {}
+		self.cfg = self._defaultcfg()
 		self.cfgdir = os.path.dirname(os.path.abspath(cfgfile))
 		self.read(cfgfile)
 		self._check()
+
+	def _defaultcfg(cfg):
+		cfg = {}
+		cfg['job_type'] = 'sge'
+		cfg['job_prefix'] = 'nextDenovo'
+		cfg['task'] = 'all'
+		cfg['rewrite'] = 1
+		cfg['rerun'] = 3
+		cfg['workdir'] = os.getcwd()
+		cfg['read_cuoff'] = '1k'
+		cfg['blocksize'] = '10g'
+		cfg['pa_raw_align'] = '10'
+		cfg['pa_correction'] = '3'
+		cfg['nodelist'] = ''
+		cfg['cluster_options'] = ''
+		cfg['seed_cutfiles'] = cfg['pa_correction']
+		cfg['correction_options'] = '-p 10'
+		cfg['sort_options'] = '-m 40g -t 8 -k 40'
+		return cfg
 
 	def read(self, cfgfile):
 		with open(cfgfile) as IN:
@@ -24,40 +43,13 @@ class ConfigParser:
 					self.cfg[group.groups()[0]] = group.groups()[1].strip()
 
 	def _check(self):
-
-		if 'job_type' not in self.cfg:
-			self.cfg['job_type'] = 'sge'
-		if 'job_prefix' not in self.cfg:
-			self.cfg['job_prefix'] = 'nextDenovo'
-		if 'task' not in self.cfg:
-			self.cfg['task'] = 'all'
-		if 'rewrite' not in self.cfg:
-			self.cfg['rewrite'] = 1
-		if 'rerun' not in self.cfg:
-			self.cfg['rerun'] = 3
-		if 'workdir' not in self.cfg:
-			self.cfg['workdir'] = os.getcwd()
-		if 'read_cuoff' not in self.cfg:
-			self.cfg['read_cuoff'] = '1k'
-		if 'blocksize' not in self.cfg:
-			self.cfg['blocksize'] = '10g'
-		if 'pa_raw_align' not in self.cfg:
-			self.cfg['pa_raw_align'] = '10'
-		if 'pa_correction' not in self.cfg:
-			self.cfg['pa_correction'] = '3'
-		if 'seed_cutfiles' not in self.cfg:
-			self.cfg['seed_cutfiles'] = self.cfg['pa_correction']
-		if 'correction_options' not in self.cfg:
-			self.cfg['correction_options'] = '-p 10'
-		if 'sge_options' not in self.cfg:
-			self.cfg['sge_options'] = ''
-		if 'sort_options' not in self.cfg:
-			self.cfg['sort_options'] = '-m 40g -t 8 -k 40'
-		if 'sge_queue' not in self.cfg:
-			self.cfg['sge_queue'] = parse_options_value(self.cfg['sge_options'], '-q').split(',') if '-q' in self.cfg['sge_options'] else ''
+		if self.cfg['job_type'].lower() != 'local' and not self.cfg['cluster_options']:
+			log.error('Error, failed find option: cluster_options')
+			sys.exit(1)
+		if 'sge_queue' not in self.cfg and '-q' in self.cfg['cluster_options']:
+			self.cfg['sge_queue'] = parse_options_value(self.cfg['cluster_options'], '-q').split(',')
 
 		self.cfg['seed_cutfiles'] = str(max(int(self.cfg['pa_correction']), int(self.cfg['seed_cutfiles'])))
-
 		self.cfg['input_fofn'] = self.cfg['input_fofn'] if self.cfg['input_fofn'].startswith('/') else self.cfgdir + '/' + self.cfg['input_fofn']
 		self.cfg['workdir'] = self.cfg['workdir'] if self.cfg['workdir'].startswith('/') else self.cfgdir + '/' + self.cfg['workdir']
 		self.cfg['raw_aligndir'] = self.cfg['workdir'] + '/01.raw_align'
@@ -67,13 +59,15 @@ class ConfigParser:
 		if 'usetempdir' in self.cfg:
 			if str(self.cfg['usetempdir']).lower() in ['no', '0', 'false']:
 				del self.cfg['usetempdir']
+			elif self.cfg['job_type'].lower() == 'local':
+				log.error('Error, usetempdir cannot be used with local.')
+				sys.exit(1)
 			else:
 				if not self.cfg['usetempdir'].startswith('/'):
 					log.error('Error, usetempdir must be absolute path')
 					sys.exit(1)
-
-				if self.cfg['job_type'] != 'sge':
-					log.error('Error, conflicted options: ' + self.cfg['job_type'] + ' && ' +  self.cfg['usetempdir'])
+				if self.cfg['job_type'] != 'sge' and not os.path.exists(self.cfg['nodelist']):
+					log.error('Error, usetempdir must be used with nodelist for non-sge job_type.')
 					sys.exit(1)
 
 		if 'input_fofn' not in self.cfg or not os.path.exists(self.cfg['input_fofn']):
@@ -85,9 +79,6 @@ class ConfigParser:
 			sys.exit(1)
 		else:
 			self.cfg['seed_cutoff'] = str(parse_num_unit(self.cfg['seed_cutoff']))
-
-		# if '-min_len_seed' not in self.cfg['correction_options']:
-		# 	self.cfg['correction_options'] += ' -min_len_seed ' + self.cfg['seed_cutoff']
 
 		if '-t' not in self.cfg['sort_options']:
 			self.cfg['sort_options'] += ' -t 8'
@@ -130,10 +121,6 @@ class ConfigParser:
 
 		if self.cfg['task'] not in ['all', 'correct', 'graph']:
 			log.error('Error, task only accept: all|cns|graph')
-			sys.exit(1)
-
-		if self.cfg['job_type'] not in ['sge', 'local']:
-			log.error('Error, job_type only accept: sge|local')
 			sys.exit(1)
 
 		if self.cfg['input_type'] not in ['raw', 'corrected']:

@@ -15,6 +15,12 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	* [Signal](https://docs.python.org/2/library/signal.html)
 	* [Drmaa](https://github.com/pygridtools/drmaa-python)
 
+* **DOWNLOAD**   
+[stable version](https://github.com/Nextomics/NextDenovo/releases/download/v1.0.1/NextDenovo.tgz)：   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v1.0.1/NextDenovo.tgz`  
+[development version](https://github.com/Nextomics/NextDenovo/archive/master.zip)：   
+`wget https://github.com/Nextomics/NextDenovo/archive/master.zip`
+
 * **INSTALL**  
 `cd NextDenovo && make`
 

@@ -23,12 +23,6 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 click [here](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.0/NextDenovo.tgz) or use the following command:   
 `wget https://github.com/Nextomics/NextDenovo/releases/download/v1.1.0/NextDenovo.tgz`  
 
-* **DOWNLOAD**   
-[stable version](https://github.com/Nextomics/NextDenovo/releases/download/v1.0.1/NextDenovo.tgz)：   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v1.0.1/NextDenovo.tgz`  
-[development version](https://github.com/Nextomics/NextDenovo/archive/master.zip)：   
-`wget https://github.com/Nextomics/NextDenovo/archive/master.zip`
-
 * **INSTALL**  
 ~~`cd NextDenovo && make`~~
 

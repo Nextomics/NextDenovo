@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total.svg)](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.0/NextDenovo.tgz)
+[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total.svg)](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.1/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Last-commit](https://img.shields.io/github/last-commit/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/commits/master)
 [![Issues](https://img.shields.io/github/issues/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/issues)
@@ -20,8 +20,8 @@ Fast and accurate *de novo* assembler for third generation sequencing (TGS) long
 	* [Signal](https://docs.python.org/2/library/signal.html)
 	* [Drmaa](https://github.com/pygridtools/drmaa-python)
 * **DOWNLOAD**   
-click [here](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.0/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v1.1.0/NextDenovo.tgz`  
+click [here](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.1/NextDenovo.tgz) or use the following command:   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v1.1.1/NextDenovo.tgz`  
 
 * **INSTALL**  
 ~~`cd NextDenovo && make`~~

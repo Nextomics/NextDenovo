@@ -74,7 +74,7 @@ click [here](https://github.com/Nextomics/NextDenovo/releases/download/v1.1.1/Ne
 cns.fasta with fasta format, the fasta header includes primary seqID, length, approximate corrected bases percentage (%). The two flanking un-corrected sequences are trimed.
 
 * **HELP**   
-Please raise an issue at the issue page.
+Please raise an issue at the [issue page](https://github.com/Nextomics/NextDenovo/issues/new).
 
 * **Contact information**    
 For additional help, please send an email to huj_at_grandomics_dot_com.

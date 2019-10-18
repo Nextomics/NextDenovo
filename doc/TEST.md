@@ -1,0 +1,94 @@
+## Assemble the genome of HG002_NA24385_son using NextDenovo
+* **Download reads**  
+`wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/final/ultra-long-ont.fastq.gz`
+
+* **Prepare input file (input.fofn)**  
+`ls ultra-long-ont.fastq.gz > input.fofn`
+
+* **Calculate the recommended minimum seed length**  
+`bin/seq_stat -f 1k -g 3g -d 45 input.fofn > input.fofn.stat`
+
+The following is the partial content of file input.fofn.stat, and it shows the recommended minimum seed length is **25799** bp at the last line.
+```
+[Read length stat]
+Types            Count (#) Length (bp)
+N10                  56450  231137
+N20                 161886  143469
+N30                 324002   95895
+N40                 558854   68596
+N50                 876274   51703
+N60                1297503   38714
+N70                1872389   27609
+N80                2723656   17503
+N90                4236082    8503
+
+Types               Count (#)           Bases (bp)  Depth (X)
+Raw                  14063218         190233179420      63.41
+Filtered              4221019           2025702592       0.68
+Clean                 9842199         188207476828      62.74
+
+*Suggested length cutoff of reads (genome size: 3000000000, expected seed depth: 45) to be corrected: 25799 bp
+```
+
+* **Prepare config file (run.cfg)** 
+``` 
+[General]
+job_type = sge # here we use SGE to manage jobs
+job_prefix = nextDenovo
+task = all # 'all', 'correct', 'assemble'
+rewrite = yes # yes/no
+deltmp = yes
+rerun = 3
+parallel_jobs = 22
+input_type = raw
+input_fofn = ./input.fofn # input file
+workdir = ./HG002_NA24385_son_assemble
+cluster_options = -l vf={vf} -q all.q -pe smp {cpu} -S {bash} -w n
+
+[correct_option]
+read_cuoff = 1k
+seed_cutoff = 25799 # the recommended minimum seed length
+blocksize = 5g
+pa_correction = 5
+seed_cutfiles = 5
+sort_options = -m 50g -t 30 -k 50
+minimap2_options_raw = -x ava-ont -t 8
+correction_options = -p 30
+
+[assemble_option]
+random_round = 100
+minimap2_options_cns = -x ava-ont -t 8 -k17 -w17
+nextgraph_options = -a 1
+```
+
+* **Run**   
+`nohup nextDenovo run.cfg &`
+
+* **Get result**
+1. Final corrected reads file (use the '-b' parameter to get more corrected reads):
+`HG002_NA24385_son_assemble/02.cns_align/01.get_cns.sh.work/get_cns*/cns.fasta`
+2. Final assembly results:  
+`HG002_NA24385_son_assemble/03.ctg_graph/01.ctg_graph.sh.work/ctg_graph*`
+3. The assembly with user defined (default) parameters:  
+`G002_NA24385_son_assemble/03.ctg_graph/01.ctg_graph.sh.work/ctg_graph000`
+
+you can get some basic statistical information of all assemblies from file nextDenovo.sh.e in each assembly directory, the folowing is the assembly statistics with default parameters:
+```
+Type           Length (bp)            Count (#)
+N10            129849938                    2
+N20            100225416                    5
+N30             86738001                    8
+N40             79369194                   11
+N50             68507507                   15
+N60             57663725                   19
+N70             44353862                   24
+N80             31031941                   32
+N90             14005322                   46
+
+Min.              338309                    -
+Max.           161109813                    -
+Ave.            20847650                    -
+Total         2731042101                  131
+```
+***Note:*** this result will have some minor changes with the version upgrade.
+

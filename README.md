@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total.svg)](https://github.com/Nextomics/NextDenovo/releases/download/v2.0-beta.1/NextDenovo.tgz)
+[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total.svg)](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Issues](https://img.shields.io/github/issues/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/issues)
 
@@ -15,8 +15,8 @@ So far, we have applied NextDenovo to dozens of species with various genome size
 	* [Drmaa](https://github.com/pygridtools/drmaa-python) (Only required by running under non-local system)
 
 * **DOWNLOAD**   
-click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.0-beta.1/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.0-beta.1/NextDenovo.tgz`  
+click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz) or use the following command:   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz`  
 
 * **INSTALL**  
 ~~`tar -vxzf NextDenovo.tgz && cd NextDenovo && make`~~

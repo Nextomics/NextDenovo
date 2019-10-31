@@ -117,7 +117,8 @@ NextGraph is used to construct a string graph with corrected reads. The main alg
     -s                              disable sort out-edges by length 
     -c                              disable pre-filter chimeric reads 
     -k                              delete compound branch pathes 
-    -R                              disable re-filter contained reads 
+    -R                              disable re-filter contained reads
+    -G                              retain potential chimeric edges
     -a --out_seq [INT]              output format, 0=None, 1=fasta, 2=graphml, 3=gfa2, 4=path [1]
     -q --keep_short_path_len [INT]  min short branch length for output, 0=disable [0]
     -Q --keep_z_path_len [INT]      min z branch length for output, 0=disable [0]

@@ -1,9 +1,9 @@
-[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total.svg)](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz)
+[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Issues](https://img.shields.io/github/issues/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/issues)
 
 # NextDenovo
-NextDenovo is a string graph-based *de novo* assembler for TGS long reads. It uses a “correct-then-assemble” strategy similar to canu, but requires significantly less computing resources and storages. After assembly, the per-base error rate is about 97-98%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
+NextDenovo is a string graph-based *de novo* assembler for TGS long reads. It uses a "correct-then-assemble" strategy similar to canu, but requires significantly less computing resources and storages. After assembly, the per-base error rate is about 97-98%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
 
 NextDenovo contains two core modules: NextCorrect and NextGraph. NextCorrect can be used to correct TGS long reads with approximately 15% sequencing errors, and NextGraph can be used to construct a string graph with corrected reads. It also contains a modified version of [minimap2](https://github.com/lh3/minimap2) for adapting input and output and producing more sensitive and accurate dovetail overlaps, and some useful utilities (see [here](./doc/UTILITY.md) for more details).
 

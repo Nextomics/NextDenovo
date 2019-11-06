@@ -82,7 +82,7 @@ ovl_sort is used to sort and remove redundancy overlaps by number of matches for
     -i  index file of seeds need to be sorted [required]
     -m  set max available buffer size, suffix K/M/G [40G]
     -t  number of threads to use [8]
-    -k  max depth of each overlap [40]
+    -k  max depth of each overlap, should <= average sequencing depth [40]
     -l  max over hang length to filter [300]
     -o  output file name [required]
     -d  temporary directory [$CWD]

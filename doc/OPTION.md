@@ -18,7 +18,7 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	[General]                # global options
 	job_type = sge           # [local, sge, pbs...]. (default: sge)
 	job_prefix = nextDenovo  # prefix tag for jobs. (default: nextDenovo)
-	task = all               # task need to run [all, correct or graph]. (default: all)
+	task = all               # task need to run [all, correct or assemble]. (default: all)
 	rewrite = no             # overwrite existed directory [yes, no]. (default: no)
 	deltmp = yes             # delete intermediate results. (default: yes)
 	rerun = 3                # re-run unfinished jobs untill finished or reached ${rerun} loops, 0=no. (default: 3)

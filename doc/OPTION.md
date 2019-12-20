@@ -29,7 +29,7 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	usetempdir = /tmp/test   # temporary directory in compute nodes to avoid high IO wait. (default: no)
 	nodelist = avanode.list.fofn
 	                         # a list of hostnames of available nodes, one node one line, used with usetempdir for non-sge job_type.
-	cluster_options = -l vf={vf} -q all.q -pe smp {cpu} -S {bash} -w n
+	cluster_options = auto
 	                         # a template to define the resource requirements for each job, which will pass to <a href="https://github.com/pygridtools/drmaa-python/wiki/FAQ">DRMAA</a> as the nativeSpecification field.
 
 	[correct_option]         # options using only in corrected step.

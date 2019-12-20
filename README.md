@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz)
+[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Issues](https://img.shields.io/github/issues/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/issues)
 
@@ -15,8 +15,8 @@ So far, we have applied NextDenovo to dozens of species with various genome size
 	* [Drmaa](https://github.com/pygridtools/drmaa-python) (Only required by running under non-local system)
 
 * **DOWNLOAD**   
-click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.1-beta.0/NextDenovo.tgz`  
+click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz) or use the following command:   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz`  
 
 * **INSTALL**  
 ~~`tar -vxzf NextDenovo.tgz && cd NextDenovo && make`~~
@@ -57,7 +57,7 @@ NextDenovo is freely available for academic use and other non-commercial use. Fo
 
 * **FAQ**  
 	1. Which job scheduling systems are supported by NextDenovo?  
-	NextDenovo use [DRMAA](https://en.wikipedia.org/wiki/DRMAA) to submit, control, and monitor jobs, so in theory, support all DRMAA-compliant system, such as LOCAL, SGE, PBS, SLURM.
+	NextDenovo uses [DRMAA](https://en.wikipedia.org/wiki/DRMAA) to submit, control, and monitor jobs, so theoretically it supports all DRMAA-compliant systems, such as LOCAL, SGE, PBS, SLURM. See [ParallelTask](https://github.com/moold/ParallelTask) to configure drmaa.
 	2. How to continue running unfinished tasks?  
 	No need to make any changes, simply run the same command again.
 	3. How to reduce the total number of subtasks?  

@@ -60,9 +60,10 @@ minimap2-nd is a modified version of [minimap2](https://github.com/lh3/minimap2)
     --minlen INT   min overlap length [500]
     --minmatch INT min match length [100]
     --minide FLOAT min identity [0.05]
-    --norealign    output the initial alignments, much faster, less accurate
+    --mode [1|2]   re-align mode, 1:fast mode, low accuracy 2:slow mode, high accuracy [2]
     --kn INT       k-mer size (no larger than 28), used to re-align [17]
     --wn INT       minizer window size, used to re-align [10]
+    --cn INT       do re-align for every INT reads [20]
     --maxhan1 INT  max over hang length, used to re-align [5000]
     --maxhan2 INT  max over hang length, used to filter contained reads [500]
 </pre>
@@ -131,6 +132,7 @@ NextGraph is used to construct a string graph with corrected reads. The main alg
     -S --min_sco_ratio [FLOAT]      min test-to-best aligned len ratio [0.40]
     -N --min_node_count [1,2]       min valid ends of a read [2]
     -u --min_con_count [1,2]        min contained number to filter reads [2]
+    -w --min_edge_cov [INT]         min depth of an edge [3]
     -r --max_sco_ratio [FLOAT]      max high score ratio [0.50]
     -d --max_aln_depth [INT]        max aligned depth [500]
     -m --min_depth_multi [FLOAT]    min depth multiple of a repeat node [1.50]

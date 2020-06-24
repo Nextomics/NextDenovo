@@ -88,8 +88,10 @@ Total         2898224197                  82
 ```
 
 * **Download reference**   
-`wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/assemblies/chm13.draft_v0.7.fasta.gz`
-`gzip -d chm13.draft_v0.7.fasta.gz`
+```
+wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/assemblies/chm13.draft_v0.7.fasta.gz
+gzip -d chm13.draft_v0.7.fasta.gz
+```
 
 * **Run Quast v5.0.2**   
 `quast.py --eukaryote --large --min-identity 80 --threads 30 -r ./chm13.draft_v0.7.fasta --fragmented nd.asm.fasta`

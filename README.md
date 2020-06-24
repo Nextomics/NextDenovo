@@ -1,22 +1,24 @@
-[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz)
+[![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/download/v2.3.0/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Issues](https://img.shields.io/github/issues/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/issues)
 
 # NextDenovo
-NextDenovo is a string graph-based *de novo* assembler for TGS long reads. It uses a "correct-then-assemble" strategy similar to canu, but requires significantly less computing resources and storages. After assembly, the per-base error rate is about 97-98%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
+NextDenovo is a string graph-based *de novo* assembler for TGS long reads. It uses a "correct-then-assemble" strategy similar to canu, but requires significantly less computing resources and storages. After assembly, the per-base error rate is about 98-99.8%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
 
 NextDenovo contains two core modules: NextCorrect and NextGraph. NextCorrect can be used to correct TGS long reads with approximately 15% sequencing errors, and NextGraph can be used to construct a string graph with corrected reads. It also contains a modified version of [minimap2](https://github.com/lh3/minimap2) for adapting input and output and producing more sensitive and accurate dovetail overlaps, and some useful utilities (see [here](./doc/UTILITY.md) for more details).
 
-So far, we have applied NextDenovo to dozens of species with various genome sizes ranging from megabytes’ level of bacteria (\~5 MB) or fungi (\~40 MB) to gigabytes’ level of mammals (\~3 GB) or gymnosperm plants (\~20 Gb). Especially, using Nanopore ultra-long reads, we have achieved genome assemblies of a maize with contig N50 of 66 Mb, a potato with contig N50 of 57 Mb, and a rice with contig N50 of 29 Mb, of which both the maize and potato contain large amounts of repetitive elements that hamper genome assembly with long contiguity and thus have a much more fragmented assembly versions in the public database compared to the one we achieved. In addition, the rice genome assembly contain merely 18 contigs in total, revealing complete assemblies for several chromosomes (Telomere to telomere with centromere in between). In addition, we found that NextDenovo, of the current version, might produce a small number of unexpected connection errors in the highly repetitive regions, which, however, can be easily corrected using additional Hi-C or Bionano data. We are still in a progress of optimizing NextDenovo and will continuously update it, especially in terms of assembly accuracy.
+So far, we have applied NextDenovo to dozens of species with various genome sizes ranging from megabytes’ level of bacteria (\~5 MB) or fungi (\~40 MB) to gigabytes’ level of mammals (\~3 GB) or gymnosperm plants (\~20 Gb). Especially, using Nanopore ultra-long reads, we have achieved genome assemblies of a maize with contig N50 of 66 Mb, a potato with contig N50 of 57 Mb, and a rice with contig N50 of 29 Mb, of which both the maize and potato contain large amounts of repetitive elements that hamper genome assembly with long contiguity and thus have a much more fragmented assembly versions in the public database compared to the one we achieved.
+
+We benchmarked NextDenovo against Canu, Flye, and Shasta using 120x Oxford Nanopore long reads from the CHM13 human cell line. NextDenovo produces the most contiguous assembly with the least number of contigs compared to the other tools. NextDenovo also shows a high assembly accurate level in terms of assembly consistency and single-base accuracy, see [here](./doc/TEST2.md#quast) for details.
 
 * **REQUIREMENT**
-	* [Python 2.7](https://www.python.org/download/releases/2.7/)
-	* [Psutil](https://psutil.readthedocs.io/en/latest/)
-	* [Drmaa](https://github.com/pygridtools/drmaa-python) (Only required by running under non-local system)
+	* [Python](https://www.python.org/download/releases/) (Support python 2 and 3):
+		* [Psutil](https://psutil.readthedocs.io/en/latest/)
+		* [Drmaa](https://github.com/pygridtools/drmaa-python) (Only required by running under non-local system)
 
 * **DOWNLOAD**   
-click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta.0/NextDenovo.tgz`  
+click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.3.0/NextDenovo.tgz) or use the following command:   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.3.0/NextDenovo.tgz`  
 
 * **INSTALL**  
 ~~`tar -vxzf NextDenovo.tgz && cd NextDenovo && make`~~
@@ -36,16 +38,17 @@ click [here](https://github.com/Nextomics/NextDenovo/releases/download/v2.2-beta
     3. Run  
         `nextDenovo run.cfg`
     4. Result
-    	- Finally assembly genome with default parameters  
-        `01_rundir/02.cns_align/01.get_cns.sh.work/get_cns000/nextgraph.assembly.contig.fasta` 
-    	- Final assembly results  
-    	`01_rundir/03.ctg_graph/01.ctg_graph.sh.work/ctg_graph*/*.e`
+        - sequence: `01_rundir/03.ctg_graph/nd.asm.fasta`
+        - statistics: `01_rundir/03.ctg_graph/nd.asm.fasta.stat`
 
 * **USAGE**    
-Please see [doc/OPTION](doc/OPTION.md) for options introduction, see [doc/TEST](doc/TEST.md) for a tutorial about using NextDenovo to assemble the genome of HG002_NA24385_son.
+Please see [doc/OPTION](doc/OPTION.md) for options introduction, see [doc/TEST](doc/TEST1.md) for a tutorial about using NextDenovo to assemble the genome of HG002_NA24385_son.
+
+* **PERFORMANCE COMPARISON**
+	+ [CHM13hTERT human cell line with 120x Oxford Nanopore data](./doc/TEST2.md) 
 
 * **HELP**   
-Please raise an issue at the [issue page](https://github.com/Nextomics/NextDenovo/issues/new).
+Please raise an issue at the [issue page](https://github.com/Nextomics/NextDenovo/issues/new). They would also be helpful to other users.
 
 * **Contact information**    
 For additional help, please send an email to huj_at_grandomics_dot_com.
@@ -70,4 +73,5 @@ NextDenovo is freely available for academic use and other non-commercial use. Fo
 	Please setup the environment variable: DRMAA_LIBRARY_PATH, see [here](https://github.com/pygridtools/drmaa-python) for more details.
 	7. ERROR: drmaa.errors.DeniedByDrmException: code 17: error: no suitable queues.  
 	This is usually caused by a wrong setting of cluster_options, please check cluster_options first. If you use SGE, you also can add '-w n' to cluster_options, it will switch off validation for invalid resource requests. Please add a similar option for other job scheduling systems. 
-
+<!-- 	8. OSError: /path/lib64/libc.so.6: version `GLIBC_2.14' not found
+	Please download [this version](https://github.com/Nextomics/NextDenovo/releases/download/v2.3.0/NextDenovo-CentOS6.9.tgz) and try again. -->

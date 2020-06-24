@@ -6,13 +6,12 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
     - reads files list (one file one line)  
     `ls reads1.fasta reads2.fastq reads3.fasta.gz reads4.fastq.gz ... > input.fofn`
     - config file   
-    A config file is a text file that contains a set of parameters (key=value pairs) to set run time parameters for NextDenovo (see OPTION section).
+    A config file is a text file that contains a set of parameters (key=value pairs) to set runtime parameters for NextDenovo (see OPTION section).
 
 * **OUTPUT**    
-	- contigs with fasta format, the fasta header includes ID, type, length, node count, a consecutive lowercase region in the sequence implies a weak connection, and a low quality base is marked with a single lowercase base.
-	- some basic statistical information (N10-N90, Total size et al.) in log files.  
-	***Note:*** By default, NextDenovo does not output the assembled sequence for random parameters. If necessary, you can rerun the task with the '-a 1' parameter.
-
+	- `workdir/03.ctg_graph/nd.asm.fasta`, contigs with fasta format, the fasta header includes ID, type, length, node count, a consecutive lowercase region in the sequence implies a weak connection, and a low quality base is marked with a single lowercase base.
+	- `workdir/03.ctg_graph/nd.asm.fasta.stat`, some basic statistical information (N10-N90, Total size et al.).  
+	
 * **OPTION** 
 <pre>
 	[General]                # global options
@@ -37,7 +36,7 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	seed_cutoff = 25k        # minimum seed length. (<b>required</b>)
 	seed_cutfiles = 10       # split seed reads into ${seed_cutfiles} subfiles. (default: ${pa_correction})
 	blocksize = 10g          # block size for parallel running. (default: 10g)
-	pa_correction = 15       # number of corrected tasks used to run in parallel. (default: 15)
+	pa_correction = 15       # number of corrected tasks used to run in parallel, overwrite parallel_jobs only for this step. (default: 15)
 	minimap2_options_raw = -x ava-ont -t 10   
 	                         # minimap2 options, used to find overlaps between raw reads and set PacBio/Nanopore read overlap, see <a href="./UTILITY.md/#minimap2-nd">here</a> for details. (<b>required</b>)
 	sort_options = -m 5g -t 2 -k 50   
@@ -51,7 +50,6 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	                         # -max_lq_length, maximum length of a continuous low quality region in a corrected seed, larger max_lq_length will produce more corrected data with lower accuracy. (default: auto [pb/1k, ont/10k])
 
 	[assemble_option]
-	random_round = 20        # number of random parameter sets. (default: 10)
 	minimap2_options_cns = -x ava-ont -t 8 -k17 -w17 
 	                         # minimap2 options, used to find overlaps between corrected reads. (default: -k17 -w17)
 	nextgraph_options = -a 1 # nextgraph options, see <a href="./UTILITY.md/#nextgraph">here</a> for details.

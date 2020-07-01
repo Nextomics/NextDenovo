@@ -48,7 +48,7 @@ Please see [doc/OPTION](doc/OPTION.md) for options introduction, see [doc/TEST](
 	+ [CHM13hTERT human cell line with 120x Oxford Nanopore data](./doc/TEST2.md) 
 
 * **HELP**   
-Please raise an issue at the [issue page](https://github.com/Nextomics/NextDenovo/issues/new). They would also be helpful to other users.
+Please raise an issue at the [issue page](https://github.com/Nextomics/NextDenovo/issues/new/choose). They would also be helpful to other users.
 
 * **Contact information**    
 For additional help, please send an email to huj_at_grandomics_dot_com.

@@ -18,6 +18,12 @@ The main task log is usually located  in your working directory and is named `pi
 [ERROR] 2020-07-01 11:06:57,185 <ins>~/NextDenovo/test_data/01_rundir/02.cns_align/02.cns_align.sh.work/cns_align0/nextDenovo.sh.e</ins>
 </pre>
 
+**Genome characteristics**
+`genome size, heterozygous rate, repeat content...`
+
+**Input data**
+`Total base count, sequencing depth, average/N50 read length...`
+
 **Operating system**
 Which operating system and version are you using?
 You can use the command `lsb_release -a` to get it.

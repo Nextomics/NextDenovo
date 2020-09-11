@@ -1,0 +1,135 @@
+## Assessment of the [Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains](https://www.ncbi.nlm.nih.gov/biosample/4539663) genome (~1% heterozygosity, 192X PacBio CLR reads) assemblies using NextDenovo, Canu, Falcon, Flye, Shasta, Mecat and Wtdbg
+* **Download reads**  
+`SRA Accession: SRX1715706, SRX1715705, SRX1715704, SRX1715703`
+
+* **Prepare input file (input.fofn)**  
+`ls f1.fasta.gz > input.fofn`
+
+* **Calculate the recommended minimum seed length**  
+`bin/seq_stat -g 120m input.fofn > input.fofn.stat`
+
+The following is the partial content of file input.fofn.stat, and it shows the recommended minimum seed length is **22282** bp at the last line.
+```
+[Read length stat]
+Types            Count (#) Length (bp)
+N10                  71318   27192
+N20                 164057   23180
+N30                 269458   20835
+N40                 385238   19147
+N50                 511119   17489
+N60                 652431   15185
+N70                 818488   12688
+N80                1021430   10157
+N90                1286325    7261
+
+Types               Count (#)           Bases (bp)  Depth (X)
+Raw                   2085004          23151934832     192.93
+Filtered               107993             58936324       0.49
+Clean                 1977011          23092998508     192.44
+
+*Suggested seed_cutoff (genome size: 120.00Mb, expected seed depth: 45, real seed depth: 45.00): 22282 bp
+```
+
+* **Prepare config file (run.cfg)** 
+``` 
+[General]
+job_type = sge
+job_prefix = nextDenovo
+task = all
+rewrite = yes
+deltmp = yes
+rerun = 3
+parallel_jobs = 12
+input_type = raw
+input_fofn = input.fofn
+workdir = 01_rundir
+
+[correct_option]
+read_cutoff = 1k
+seed_cutoff = 22282
+blocksize = 2g
+pa_correction = 6
+seed_cutfiles = 6
+sort_options = -m 50g -t 35 -k 40
+minimap2_options_raw = -x ava-pb -t 20
+correction_options = -p 35
+
+[assemble_option]
+minimap2_options_cns = -x ava-pb -t 20 -k17 -w17
+nextgraph_options = -a 1
+```
+
+* **Run**   
+`nohup nextDenovo run.cfg &`
+
+* **Get result**
+1. Final corrected reads file (use the '-b' parameter to get more corrected reads):
+`01_rundir/02.cns_align/01.seed_cns.sh.work/seed_cns*/cns.fasta`
+2. Final assembly result:  
+`01_rundir/03.ctg_graph/nd.asm.fasta`
+
+The folowing is the assembly statistics:
+```
+Type           Length (bp)            Count (#)
+N10             13144176                   1
+N20             13090493                   2
+N30              9367478                   4
+N40              9212899                   5
+N50              8798661                   6
+N60              5544810                   8
+N70              3588034                  11
+N80              2192782                  16
+N90               688550                  25
+
+Min.               26566                   -
+Max.            13144176                   -
+Ave.             1434812                   -
+Total          126263508                  88
+```
+
+* **Assemble with shasta**  
+`shasta-Linux-0.5.1 --input f1.fasta --threads 30` 
+
+* **Download reference**   
+```
+wget ftp://ftp.arabidopsis.org/home/tair/Genes/TAIR10_genome_release/TAIR10_chromosome_files/TAIR10_chr_all.fas
+```
+
+* **Run Quast v5.0.2**   
+`quast.py --large --eukaryote --min-identity 80 --threads 30 -r TAIR10_chr_all.fa nextDenovo.asm.fa Canu.asm.fa Falcon.asm.fa Flye.asm.fa Shasta.asm.fa Mecat.asm.fa Wtdbg.asm.fa`
+
+<a name="quast"></a>  
+
+* **Quast result**
+
+| | nextDenovo | Canu | Falcon | Flye | Shasta | Mecat | Wtdbg |
+| --------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| # contigs | 88 | 2107 | 171 | 1097 | 1468 | 1243 | 703 |
+| Largest contig | 13144176 | 3980575 | 13319401 | 4836132 | 4378421 | 12631656 | 14128365 |
+| Total length | 126263508 | 229056851 | 140024465 | 131553479 | 143148140 | 202215921 | 132890796 |
+| N50 | 8798661 | 231924 | 7960654 | 325940 | 357597 | 688687 | 5479602 |
+| **NG50** | 8798661 | 873036 | 7979657 | 370306 | 560105 | 3525236 | 8707235 |
+| N75 | 2323231 | 69274 | 1507122 | 137772 | 93305 | 85155 | 1095469 |
+| **NG75** | 3588034 | 460325 | 4810976 | 180227 | 185928 | 1096121 | 2182254 |
+| LG50 | 6 | 40 | 6 | 71 | 50 | 8 | 6 |
+| LG75 | 11 | 86 | 10 | 190 | 149 | 22 | 13 |
+| # **misassemblies** | 1314 | 2314 | 1607 | 1570 | 1631 | 1783 | 1529 |
+| # misassembled contigs | 63 | 383 | 89 | 362 | 357 | 250 | 156 |
+| # **local misassemblies** | 1128 | 2571 | 1437 | 1189 | 1077 | 2196 | 1086 |
+| # unaligned mis. contigs | 0 | 8 | 0 | 39 | 79 | 0 | 25 |
+| # unaligned contigs | 13 + 57 part | 278 + 511 part | 48 + 63 part | 27 + 494 part | 81 + 528 part | 1 + 355 part | 253 + 256 part |
+| Unaligned length | 5577991 | 13404835 | 6336453 | 4365056 | 11810280 | 5760459 | 12620722 |
+| Genome fraction (%) | 96.006 | 99.528 | 96.938 | 96.517 | 97.774 | 98.166 | 93.695 |
+| **Duplication ratio** | 1.052 | 1.813 | 1.154 | 1.103 | 1.124 | 1.675 | 1.074 |
+| # **mismatches per 100 kbp** | 668.46 | 1299.53 | 822.92 | 753.04 | 763.33 | 1052.95 | 722.82 |
+| # **indels per 100 kbp** | 193.40 | 281.21 | 127.09 | 212.74 | 727.64 | 338.60 | 303.37 |
+| Largest alignment | 5887963 | 3963652 | 10477942 | 4820655 | 3059195 | 5451806 | 7529822 |
+| Total aligned length | 120235666 | 214635623 | 133317043 | 126764931 | 131090282 | 196116682 | 120017897 |
+| NA50 | 1136416 | 115341 | 1459104 | 280334 | 255952 | 202014 | 756810 |
+| **NGA50** | 1504454 | 539509 | 1909294 | 328298 | 384761 | 901832 | 945708 |
+| NA75 | 354228 | 48301 | 270481 | 93990 | 41634 | 62905 | 192079 |
+| **NGA75** | 472949 | 246039 | 676191 | 128725 | 118594 | 339389 | 316618 |
+| LGA50 | 21 | 60 | 15 | 82 | 60 | 27 | 27 |
+| LGA75 | 61 | 140 | 41 | 230 | 202 | 80 | 82 |
+
+***Note:*** the results of Canu, Falcon, Flye, Mecat and Wtdbg are copied from ftp://ftp.dfci.harvard.edu/pub/hli/wtdbg/at-f1, published by [wtdbg2 paper](https://www.nature.com/articles/s41592-019-0669-3), the complete result of Quast can be seen from [here](./TEST3.pdf).

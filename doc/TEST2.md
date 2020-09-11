@@ -1,4 +1,4 @@
-## Assessment of the [CHM13](https://github.com/nanopore-wgs-consortium/CHM13) genome assemblies using NextDenovo, Canu, Flye,	Shasta
+## Assessment of the [CHM13](https://github.com/nanopore-wgs-consortium/CHM13) genome (120X NanoPore data) assemblies using NextDenovo, Canu, Flye,	Shasta
 * **Download reads**  
 `wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/nanopore/rel3/rel3.fastq.gz`
 
@@ -27,7 +27,7 @@ Raw                  28449385         367231282800     118.46
 Filtered             22918160          59455023122      19.18
 Clean                 5531225         307776259678      99.28
 
-*Suggested length cutoff of reads (genome size: 3100000000, expected seed depth: 45) to be corrected: 71477 bp
+*Suggested seed_cutoff (genome size: 3100000000, expected seed depth: 45) : 71477 bp
 ```
 
 * **Prepare config file (run.cfg)** 

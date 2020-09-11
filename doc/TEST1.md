@@ -27,7 +27,7 @@ Raw                  14063218         190233179420      63.41
 Filtered              4221019           2025702592       0.68
 Clean                 9842199         188207476828      62.74
 
-*Suggested length cutoff of reads (genome size: 3000000000, expected seed depth: 45) to be corrected: 25799 bp
+*Suggested seed_cutoff (genome size: 3000000000, expected seed depth: 45) : 25799 bp
 ```
 
 * **Prepare config file (run.cfg)** 

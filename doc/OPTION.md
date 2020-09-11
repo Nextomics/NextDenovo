@@ -25,7 +25,7 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	input_type = raw         # input reads type [raw, corrected]. (default: raw)
 	input_fofn = input.fofn  # input file, one line one file. (<b>required</b>)
 	workdir = 01.workdir     # work directory. (default: ./)
-	usetempdir = /tmp/test   # temporary directory in compute nodes to avoid high IO wait. (default: no)
+	usetempdir = /tmp/test   # temporary directory in compute nodes to avoid high IO wait. (default: None)
 	nodelist = avanode.list.fofn
 	                         # a list of hostnames of available nodes, one node one line, used with usetempdir for non-sge job_type.
 	cluster_options = auto
@@ -34,12 +34,12 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	[correct_option]         # options using only in corrected step.
 	read_cutoff = 1k         # filter reads with length < read_cutoff. (default: 1k)
 	seed_cutoff = 25k        # minimum seed length. (<b>required</b>)
-	seed_cutfiles = 10       # split seed reads into ${seed_cutfiles} subfiles. (default: ${pa_correction})
+	seed_cutfiles = 5        # split seed reads into ${seed_cutfiles} subfiles. (default: ${pa_correction})
 	blocksize = 10g          # block size for parallel running. (default: 10g)
-	pa_correction = 15       # number of corrected tasks used to run in parallel, overwrite parallel_jobs only for this step. (default: 15)
+	pa_correction = 5        # number of corrected tasks used to run in parallel, overwrite parallel_jobs only for this step. (default: 15)
 	minimap2_options_raw = -x ava-ont -t 10   
 	                         # minimap2 options, used to find overlaps between raw reads and set PacBio/Nanopore read overlap, see <a href="./UTILITY.md/#minimap2-nd">here</a> for details. (<b>required</b>)
-	sort_options = -m 5g -t 2 -k 50   
+	sort_options = -m 40g -t 10 -k 50   
 	                         # sort options, see <a href="./UTILITY.md/#ovl_sort">here</a> for details.  
 	correction_options = -p 10            
 	                         # -p, --process, set the number of processes used for correcting. (default: 10)
@@ -52,5 +52,7 @@ NextDenovo requires at least one read file (option: input_fofn) as input, it wor
 	[assemble_option]
 	minimap2_options_cns = -x ava-ont -t 8 -k17 -w17 
 	                         # minimap2 options, used to find overlaps between corrected reads. (default: -k17 -w17)
+	minimap2_options_map = -x map-ont
+	                         # minimap2 options, used to map reads back to the assembly.
 	nextgraph_options = -a 1 # nextgraph options, see <a href="./UTILITY.md/#nextgraph">here</a> for details.
 </pre>

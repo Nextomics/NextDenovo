@@ -15,6 +15,7 @@ seq_stat can be used to perform some simple statistics (such as length distribut
     -f skip reads with length shorter than this value, default 1kb
     -g estimated genome size, default: 5Mb
     -d expected seed depth, used to be corrected, default: 45
+    -a disable automatic adjustment.
 </pre>
 
 ## seq_dump  
@@ -56,7 +57,7 @@ minimap2-nd is a modified version of [minimap2](https://github.com/lh3/minimap2)
     4. Add a re-align step for potential dovetail overlaps.
 * **EXTRA OPTIONS**  
 <pre>
-    --step [1|2]   preset options for NextDenovo [required]
+    --step [1|2|3] preset options for NextDenovo [required]
     --minlen INT   min overlap length [500]
     --minmatch INT min match length [100]
     --minide FLOAT min identity [0.05]
@@ -81,7 +82,7 @@ ovl_sort is used to sort and remove redundancy overlaps by number of matches for
 * **OPTIONS**   
 <pre>
     -i  index file of seeds need to be sorted [required]
-    -m  set max available buffer size, suffix K/M/G [40G]
+    -m  set max total available buffer size, suffix K/M/G [40G]
     -t  number of threads to use [8]
     -k  max depth of each overlap, should <= average sequencing depth [40]
     -l  max over hang length to filter [300]
@@ -98,6 +99,7 @@ ovl_cvt can be used to compress or uncompress overlap files.
     `- compressed or uncompressed overlaps`
 * **OPTIONS**   
     `-m INT    conversion mode (0 for compress, 1 for uncompress)`
+
 ## nextgraph
 * **DESCRIPTION**  
 NextGraph is used to construct a string graph with corrected reads. The main algorithms are similar to other mainstream assemblers except using a graph-based algorithm to identify chimeric nodes and a scoring-based strategy to identify incorrect edges. It can output an assembly in [Fasta](https://en.wikipedia.org/wiki/FASTA_format), [GFA2](https://github.com/GFA-spec/GFA-spec/blob/master/GFA2.md), [GraphML](https://en.wikipedia.org/wiki/GraphML), Path formats, or only statistical information (for quickly optimize parameters). 
@@ -116,34 +118,32 @@ NextGraph is used to construct a string graph with corrected reads. The main alg
     -f [FILE]                       input seq list [required]
     -o [FILE]                       output file [stdout]
     -c                              disable pre-filter chimeric reads 
-    -k                              delete compound branch pathes 
-    -R                              disable re-filter contained reads 
     -G                              retain potential chimeric edges 
-    -A --out_alt_ctg                output alternative contigs 
-    -a --out_seq [INT]              output format, 0=None, 1=fasta, 2=graphml, 3=gfa2, 4=path [1]
-    -E --out_ctg_len [INT]          min contig len for output [1000]
-    -q --out_spath_len [INT]        min short branch length for output, 0=disable [0]
-    -Q --out_zpath_len [INT]        min z branch length for output, 0=disable [0]
-    -F --fuzz [INT]                 fuzz len for trans-reduction [1000]
-    -D --ext_node_count [INT]       depth of BFS to identify chimeric nodes [2]
-    -P --ext_depth_multi [INT]      max depth multiple of a node for BFS [2]
+    -k                              delete complex bubble paths 
+    -A                              output alternative contigs 
+    -a --out_format [INT]           output format, 0=None, 1=fasta, 2=graphml, 3=gfa2, 4=path [1]
+    -E --out_ctg_len [INT]          min contig length for output [1000]
+    -q --out_spath_len [INT]        min short branch len for output, 0=disable [0]
     -i --min_ide [FLOAT]            min identity of alignments [0.10]
     -I --min_ide_ratio [FLOAT]      min test-to-best identity ratio [0.70]
-    -S --min_sco_ratio [FLOAT]      min test-to-best aligned len ratio [0.40]
-    -M --min_mat_ratio [FLOAT]      min test-to-best matches ratio [0.90]
-    -T --min_edepth_ratio [FLOAT]   min test-to-best depth ratio of an edge [0.60]
-    -N --min_node_count [1,2]       min valid ends of a read [2]
-    -u --min_con_count [1,2]        min contained number to filter reads [2]
+    -S --min_sco_ratio [FLOAT]      min test-to-best aligned length ratio [0.40]
+    -r --max_sco_ratio [FLOAT]      max test-to-best score ratio of a low quality edge [0.50]
+    -M --min_mat_ratio [FLOAT]      min test-to-best aligned matches ratio [0.90]
+    -T --min_depth_ratio [FLOAT]    min test-to-best depth ratio of an edge [0.60]
+    -N --min_node_count [1,2]       min valid nodes of a read [2]
+    -u --min_con_count [1,2]        min contained number to filter contained reads [2]
     -w --min_edge_cov [INT]         min depth of an edge [3]
-    -r --max_sco_ratio [FLOAT]      max high score ratio [0.50]
+    -D --bfs_depth [INT]            depth of BFS to identify chimeric nodes [2]
+    -P --bfs_depth_multi [INT]      max depth multiple of a node for BFS [2]
     -m --min_depth_multi [FLOAT]    min depth multiple of a repeat node [1.50]
     -n --max_depth_multi [FLOAT]    max depth multiple of a node [2000.00]
     -B --bubble_len [INT]           max len of a bubble [500]
-    -C --comp_path_len [INT]        max len of a compound path [20]
-    -z --zclip_len [INT]            max len of a z branch [8]
-    -l --short_branch_len [INT]     max len of a short branch [15]
-    -L --short_loop_len [INT]       max len of a short loop [10]
-    -t --max_hang_tlen [INT]        max over hang length of dovetails [500]
+    -C --cpath_len [INT]            max len of a compound path [20]
+    -z --zbranch_len [INT]          max len of a z branch [8]
+    -l --sbranch_len [INT]          max len of a short branch [15]
+    -L --sloop_len [INT]            max len of a short loop [10]
+    -t --max_hang_len [INT]         max over hang length of dovetails [500]
+    -F --fuzz_len [INT]             fuzz len for trans-reduction [1000]
 </pre>
 
 ## bam_sort

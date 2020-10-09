@@ -10,14 +10,14 @@ Input
 
 - ``input_fofn`` (one file one line)
 
-  .. code:: console
+  .. code-block:: shell
 
     ls reads1.fasta reads2.fastq reads3.fasta.gz reads4.fastq.gz ... > input.fofn
 - ``config file``
 
   A config file is a text file that contains a set of parameters (key=value pairs) to set runtime parameters for NextDenovo. The following is a typical config file, which is also located in ``doc/run.cfg``.
   
-  .. code:: console
+  .. code-block:: bash
 
     [General]
     job_type = local

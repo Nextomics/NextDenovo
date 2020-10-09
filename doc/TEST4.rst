@@ -7,19 +7,19 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
 
 1. **Download reads**
   
-  .. code:: console
+  .. code-block:: shell
 
     SRA Accession: SRR6702603, SRR6821890
 
 2. **Prepare input file (input.fofn)**
   
-  .. code:: console
+  .. code-block:: shell
   
     ls SRR6702603.fasta.gz SRR6821890.fasta.gz > input.fofn
 
 3. **Calculate the recommended minimum seed length**
   
-  .. code:: console 
+  .. code-block:: shell 
 
     bin/seq_stat -g 130m input.fofn > input.fofn.stat
 
@@ -48,7 +48,7 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
 
 4. **Prepare config file (run.cfg)**
 
-  .. code:: console
+  .. code-block:: shell
 
     [General]
     job_type = sge
@@ -79,7 +79,7 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
 
 5. **Run**   
   
-  .. code:: console
+  .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
@@ -114,13 +114,13 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
 
 7. **Assemble with shasta** 
   
-  .. code:: console
+  .. code-block:: shell
     
     shasta-Linux-0.5.1  --input SRR6702603.fasta --input SRR6821890.fasta --threads 30
 
 8. **Download reference**   
 
-  .. code:: console
+  .. code-block:: shell
 
     wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/215/GCF_000001215.4_Release_6_plus_ISO1_MT/GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna.gz
     gzip -d GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna.gz
@@ -128,7 +128,7 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
 
 9. **Run Quast v5.0.2**
     
-  .. code:: console
+  .. code-block:: shell
     
     quast.py --large --eukaryote --min-identity 80 --threads 30 -r GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna nextDenovo.asm.fa Canu.asm.fa Flye.asm.fa Shasta.asm.fa Wtdbg.asm.fa
 

@@ -7,19 +7,19 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
 
 1. **Download reads**
   
-  .. code:: console
+  .. code-block:: shell
 
     wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/nanopore/rel3/rel3.fastq.gz
 
 2. **Prepare input file (input.fofn)**
 
-  .. code:: console
+  .. code-block:: shell
 
     ls rel3.fastq.gz > input.fofn
 
 3. **Calculate the recommended minimum seed length**
    
-  .. code:: console
+  .. code-block:: shell
 
     bin/seq_stat -f 20k -g 3.1g input.fofn > input.fofn.stat
 
@@ -48,7 +48,7 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
 
 4. **Prepare config file (run.cfg)**
    
-   .. code:: console
+   .. code-block:: shell
 
     [General]
     job_type = sge
@@ -78,7 +78,7 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
 
 5. **Run**
 
-  .. code:: console
+  .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
@@ -112,14 +112,14 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
 
 7. **Download reference**   
   
-  .. code:: console
+  .. code-block:: shell
   
     wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/assemblies/chm13.draft_v0.7.fasta.gz
     gzip -d chm13.draft_v0.7.fasta.gz
 
 8. **Run Quast v5.0.2**
   
-  .. code:: console
+  .. code-block:: shell
 
     quast.py --eukaryote --large --min-identity 80 --threads 30 -r ./chm13.draft_v0.7.fasta --fragmented nd.asm.fasta
 

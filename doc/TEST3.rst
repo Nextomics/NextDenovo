@@ -7,19 +7,19 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
 
 1. **Download reads**
   
-  .. code:: console
+  .. code-block:: shell
 
     SRA Accession: SRX1715706, SRX1715705, SRX1715704, SRX1715703
 
 2. **Prepare input file (input.fofn)**
   
-  .. code:: console
+  .. code-block:: shell
   
     ls f1.fasta.gz > input.fofn
 
 3. **Calculate the recommended minimum seed length**
   
-  .. code:: console
+  .. code-block:: shell
 
     bin/seq_stat -g 120m input.fofn > input.fofn.stat
 
@@ -48,7 +48,7 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
 
 4. **Prepare config file (run.cfg)**
 
-  .. code:: console
+  .. code-block:: shell
 
     [General]
     job_type = sge
@@ -79,7 +79,7 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
 
 5. **Run**   
   
-  .. code:: console
+  .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
@@ -114,19 +114,19 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
 
 7. **Assemble with shasta** 
   
-  .. code:: console 
+  .. code-block:: shell 
     
     shasta-Linux-0.5.1 --input f1.fasta --threads 30
 
 8. **Download reference**   
   
-  .. code:: console 
+  .. code-block:: shell 
     
     wget ftp://ftp.arabidopsis.org/home/tair/Genes/TAIR10_genome_release/TAIR10_chromosome_files/TAIR10_chr_all.fas
 
 9. **Run Quast v5.0.2**
   
-  .. code:: console
+  .. code-block:: shell
   
     quast.py --large --eukaryote --min-identity 80 --threads 30 -r TAIR10_chr_all.fa nextDenovo.asm.fa Canu.asm.fa Falcon.asm.fa Flye.asm.fa Shasta.asm.fa Mecat.asm.fa Wtdbg.asm.fa
 

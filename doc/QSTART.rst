@@ -6,9 +6,12 @@
 .. image:: https://img.shields.io/github/release/Nextomics/NextDenovo.svg
    :target: https://github.com/Nextomics/NextDenovo/releases
    :alt: Version
-.. .. image:: https://img.shields.io/github/issues/Nextomics/NextDenovo.svg
-..    :target: https://github.com/Nextomics/NextDenovo/issues
-..    :alt: Issues
+.. image:: https://img.shields.io/github/issues/Nextomics/NextDenovo.svg
+   :target: https://github.com/Nextomics/NextDenovo/issues
+   :alt: Issues
+.. image:: https://readthedocs.org/projects/nextdenovo/badge/?version=latest
+   :target: https://nextdenovo.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
 .. .. image:: https://img.shields.io/badge/切换-中文版本-9cf
 ..    :target: https://github.com/Nextomics/NextDenovo/issues
 ..    :alt: 中文版本
@@ -46,7 +49,7 @@ Installation
 
    click `here <https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz>`__ or use the following command:
 
-   .. code:: console
+   .. code-block:: shell
 
       wget https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz
 
@@ -69,7 +72,7 @@ Installation
 
 -  **TEST**
    
-   .. code:: console
+   .. code-block:: shell
 
       nextDenovo test_data/run.cfg 
 
@@ -79,12 +82,12 @@ Quick Start
 
 #. Prepare input.fofn
 
-   .. code:: console
+   .. code-block:: shell
 
       ls reads1.fasta reads2.fastq reads3.fasta.gz reads4.fastq.gz ... > input.fofn
 #. Create run.cfg
 
-   .. code:: console
+   .. code-block:: shell
 
       cp doc/run.cfg ./
    
@@ -92,7 +95,7 @@ Quick Start
 
 #. Run
 
-   .. code:: console
+   .. code-block:: shell
 
       nextDenovo run.cfg
 
@@ -132,7 +135,7 @@ Limitations
 Star
 ~~~~
 
-You can track updates by tab the "Star" button on the upper-right corner at the `github page <https://github.com/Nextomics/NextDenovo>`_.
+You can track updates by tab the ``Star`` button on the upper-right corner at the `github page <https://github.com/Nextomics/NextDenovo>`_.
 
 .. |ss| raw:: html
 

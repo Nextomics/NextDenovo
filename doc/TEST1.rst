@@ -5,19 +5,19 @@ Assemble the genome of HG002_NA24385_son using NextDenovo
 
 1. **Download reads**
 
-  .. code:: console
+  .. code-block:: shell
 
     wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/final/ultra-long-ont.fastq.gz
 
 2. **Prepare input file (input.fofn)**
 
-   .. code:: console
+   .. code-block:: shell
 
     ls ultra-long-ont.fastq.gz > input.fofn
 
 3. **Calculate the recommended minimum seed length**
   
-  .. code:: console
+  .. code-block:: shell
   
     bin/seq_stat -f 1k -g 3g -d 45 input.fofn > input.fofn.stat
 
@@ -46,7 +46,7 @@ Assemble the genome of HG002_NA24385_son using NextDenovo
 
 4. **Prepare config file (run.cfg)** 
 
-  .. code:: console
+  .. code-block:: shell
 
     [General]
     job_type = sge # here we use SGE to manage jobs
@@ -76,7 +76,7 @@ Assemble the genome of HG002_NA24385_son using NextDenovo
 
 5. **Run**
 
-  .. code:: console
+  .. code-block:: shell
     
     nohup nextDenovo run.cfg &
 

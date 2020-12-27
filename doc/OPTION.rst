@@ -23,26 +23,24 @@ Input
     job_type = local
     job_prefix = nextDenovo
     task = all
-    rewrite = yes # yes/no
+    rewrite = yes
     deltmp = yes 
-    rerun = 3
     parallel_jobs = 20
     input_type = raw
+    read_type = clr # clr, ont, hifi
     input_fofn = input.fofn
     workdir = 01_rundir
 
     [correct_option]
     read_cutoff = 1k
-    seed_cutoff = 29999 
-    blocksize = 2g
+    genome_size = 1g # estimated genome size
+    sort_options = -m 20g -t 15
+    minimap2_options_raw = -t 8
     pa_correction = 3
-    seed_cutfiles = 10
-    sort_options = -m 20g -t 10 -k 40 
-    minimap2_options_raw = -x ava-ont -t 8 
     correction_options = -p 15
 
     [assemble_option]
-    minimap2_options_cns = -x ava-ont -t 8 -k17 -w17 
+    minimap2_options_cns = -t 8 
     nextgraph_options = -a 1  
 
 Output
@@ -65,14 +63,14 @@ Global options
 
   .. option:: job_type = sge           
     
-    local, sge, pbs... (default: sge)
+    local, sge, pbs, lsf, slurm... (default: sge)
 
   .. option:: job_prefix = nextDenovo  
 
     prefix tag for jobs. (default: nextDenovo)
   .. option:: task = <all, correct, assemble>     
 
-    task need to run. (default: all)
+    task need to run, correct = only do the correction step, assemble = only do the assembly step (only work if ``input_type`` = corrected or ``read_type`` = hifi), all = correct + assemble. (default: all)
   .. option::  rewrite = no  
 
     overwrite existed directory [yes, no]. (default: no)
@@ -81,7 +79,7 @@ Global options
     delete intermediate results. (default: yes)
   .. option::  rerun = 3         
 
-    re-run unfinished jobs untill finished or reached ${rerun} loops, 0=no. (default: 3)
+    re-run unfinished jobs untill finished or reached ``rerun`` loops, 0=no. (default: 3)
   .. option::  parallel_jobs = 10       
 
     number of tasks used to run in parallel. (default: 10)
@@ -91,6 +89,12 @@ Global options
   .. option::  input_fofn = input.fofn  
 
     input file, one line one file. (**required**)
+
+.. _read_type:
+
+  .. option::  read_type = {clr, hifi, ont}  
+
+    reads type, clr=PacBio continuous long read, hifi=PacBio highly accurate long reads, ont=NanoPore 1D reads. (**required**)
   .. option::  workdir = 01.workdir     
 
     work directory. (default: ./)
@@ -109,23 +113,32 @@ Correction options
 
   .. option::  read_cutoff = 1k   
 
-    filter reads with length < read_cutoff. (default: 1k)
-  .. option::  seed_cutoff = 25k   
+    filter reads with length < ``read_cutoff``. (default: 1k)
 
-    minimum seed length. (**required**)
+.. _genome_size:
+
+  .. option::  genome_size = 1g   
+
+    estimated genome size, suffix K/M/G recognized, used to calculate ``seed_cutoff``/``seed_cutfiles``/``blocksize`` and average depth, it can be omitted when manually setting ``seed_cutoff``.
+  .. option::  seed_depth = 45   
+
+    expected seed depth, used to calculate ``seed_cutoff``, co-use with ``genome_size``, you can try to set it 30-45 to get a better assembly result. (default: 45)
+  .. option::  seed_cutoff = 0   
+
+    minimum seed length, <=0 means calculate it automatically using :ref:`bin/seq_stat <seq_stat>`.
   .. option::  seed_cutfiles = 5    
 
-    split seed reads into ${seed_cutfiles} subfiles. (default: ${pa_correction})
+    split seed reads into ``seed_cutfiles`` subfiles. (default: ``pa_correction``)
   .. option::  blocksize = 10g      
 
-    block size for parallel running. (default: 10g)
-  .. option::  pa_correction = 5        
+    block size for parallel running, split non-seed reads into small files, the maximum size of each file is ``blocksize``. (default: 10g)
+  .. option::  pa_correction = 3        
 
-    number of corrected tasks used to run in parallel, overwrite ${parallel_jobs} only for this step. (default: 15)
-  .. option::  minimap2_options_raw = -x ava-ont -t 10  
+    number of corrected tasks used to run in parallel, each corrected task requires ~TOTAL_INPUT_BASES/4 bytes of memory usage, overwrite ``parallel_jobs`` only for this step. (default: 3)
+  .. option::  minimap2_options_raw = -t 10  
 
-    minimap2 options, used to find overlaps between raw reads and set PacBio/Nanopore read overlap, see :ref:`minimap2-nd <minimap2-nd>` for details. (**required**)
-  .. option::  sort_options = -m 40g -t 10 -k 50 
+    minimap2 options, used to find overlaps between raw reads, see :ref:`minimap2-nd <minimap2-nd>` for details.
+  .. option::  sort_options = -m 40g -t 10 
 
     sort options, see :ref:`ovl_sort <ovl_sort>` for details.  
   .. option::  correction_options = -p 10 
@@ -142,10 +155,10 @@ Correction options
 Assembly options
 ##################
 
-  .. option::  minimap2_options_cns = -x ava-ont -t 8 -k17 -w17 
+  .. option::  minimap2_options_cns = -t 8 -k17 -w17 
 
-    minimap2 options, used to find overlaps between corrected reads. (default: -k17 -w17)
-  .. option::  minimap2_options_map = -x map-ont
+    minimap2 options, used to find overlaps between corrected reads.
+  .. option::  minimap2_options_map = -t 10
 
     minimap2 options, used to map reads back to the assembly.
   .. option::  nextgraph_options = -a 1

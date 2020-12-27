@@ -17,72 +17,41 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
 
     ls rel3.fastq.gz > input.fofn
 
-3. **Calculate the recommended minimum seed length**
-   
-  .. code-block:: shell
-
-    bin/seq_stat -f 20k -g 3.1g input.fofn > input.fofn.stat
-
-  The following is the partial content of file input.fofn.stat, and it shows the recommended minimum seed length is ``71477`` bp at the last line.
-
-  ::
-
-    [Read length stat]
-    Types            Count (#) Length (bp)
-    N10                 110235  202350
-    N20                 295841  140527
-    N30                 550659  105149
-    N40                 885683   81094
-    N50                1313448   64445
-    N60                1843885   52578
-    N70                2489549   43370
-    N80                3274007   35502
-    N90                4246284   28093
-
-    Types               Count (#)           Bases (bp)  Depth (X)
-    Raw                  28449385         367231282800     118.46
-    Filtered             22918160          59455023122      19.18
-    Clean                 5531225         307776259678      99.28
-
-    *Suggested seed_cutoff (genome size: 3100000000, expected seed depth: 45) : 71477 bp
-
-4. **Prepare config file (run.cfg)**
+3. **Prepare config file (run.cfg)**
    
    .. code-block:: shell
 
     [General]
-    job_type = sge
+    job_type = sge # here we use SGE to manage jobs
     job_prefix = nextDenovo
-    task = all # 'all', 'correct', 'assemble'
-    rewrite = yes # yes/no
-    deltmp = yes
-    rerun = 3
+    task = all
+    rewrite = yes
+    deltmp = yes 
     parallel_jobs = 25
     input_type = raw
-    input_fofn = ./input.fofn
-    workdir = ./chm13_asm
+    read_type = ont # clr, ont, hifi
+    input_fofn = input.fofn
+    workdir = chm13_asm
 
     [correct_option]
     read_cutoff = 20k
-    seed_cutoff = 71477
-    blocksize = 5g
+    genome_size = 3.1g # estimated genome size
+    sort_options = -m 150g -t 30
+    minimap2_options_raw = -t 8
     pa_correction = 5
-    seed_cutfiles = 5
-    sort_options = -m 150g -t 30 -k 50
-    minimap2_options_raw = -x ava-ont -t 8
     correction_options = -p 30
 
     [assemble_option]
-    minimap2_options_cns = -x ava-ont -t 8 -k17 -w17
+    minimap2_options_cns = -t 8 
     nextgraph_options = -a 1
 
-5. **Run**
+4. **Run**
 
   .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
-6. **Get result**
+5. **Get result**
    
   - Final corrected reads file (use the ``-b`` parameter to get more corrected reads)::
   
@@ -110,14 +79,14 @@ Assessment of the `CHM13 <https://github.com/nanopore-wgs-consortium/CHM13>`__ g
     Ave.            35344197                   -
     Total         2898224197                  82
 
-7. **Download reference**   
+6. **Download reference**   
   
   .. code-block:: shell
   
     wget https://s3.amazonaws.com/nanopore-human-wgs/chm13/assemblies/chm13.draft_v0.7.fasta.gz
     gzip -d chm13.draft_v0.7.fasta.gz
 
-8. **Run Quast v5.0.2**
+7. **Run Quast v5.0.2**
   
   .. code-block:: shell
 

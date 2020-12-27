@@ -20,7 +20,7 @@
 NextDenovo
 ==========
 
-NextDenovo is a string graph-based *de novo* assembler for long reads. It uses a "correct-then-assemble" strategy similar to canu, but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use `NextPolish <https://github.com/Nextomics/NextPolish>`_.
+NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, HiFi and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use `NextPolish <https://github.com/Nextomics/NextPolish>`_.
 
 NextDenovo contains two core modules: NextCorrect and NextGraph. NextCorrect can be used to correct long noisy reads with approximately 15% sequencing errors, and NextGraph can be used to construct a string graph with corrected reads. It also contains a modified version of `minimap2 <https://github.com/lh3/minimap2>`_ and some useful utilities (see :ref:`utilities <utilities>` for more details).
 
@@ -91,7 +91,7 @@ Quick Start
 
       cp doc/run.cfg ./
    
-   .. note:: Please change the value of seed\_cutoff using :ref:`bin/seq\_stat <seq_stat>` and refer to :ref:`doc/OPTION <options>` to optimize parallel computing parameters.
+   .. note:: Please set :ref:`read_type <read_type>` and :ref:`genome_size <genome_size>`, and refer to :ref:`doc/FAQ <how-to-optimize-parallel-computing-parameters>` and :ref:`doc/OPTION <options>` to optimize parallel computing parameters.
 
 #. Run
 
@@ -119,7 +119,7 @@ Getting Help
 Copyright
 ~~~~~~~~~
 
-NextDenovo is freely available for academic use and other non-commercial use. For commercial use, please contact `NextOmics <https://www.nextomics.cn/en/>`_.
+NextDenovo is only freely available for academic use and other non-commercial use. For commercial use, please contact `NextOmics <https://www.nextomics.cn/en/>`_.
 
 Cite
 ~~~~
@@ -129,7 +129,6 @@ We are now preparing the manuscript of NextDenovo, so if you use NextDenovo now,
 Limitations
 ~~~~~~~~~~~
 
-#. The current version of NextDenovo is not suitable for assembly with PacBio HiFi reads, becasue Minimap2 does not optimize for HiFi reads overlapping.
 #. NextDenovo is optimized for assembly with seed\_cutoff >= 10kb. This should not be a big problem because it only requires the longest 30x-45x seeds length >= 10kb. For shorter seeds, it may produce unexpected results for some complex genomes and need be careful to check the quality.
 
 Star

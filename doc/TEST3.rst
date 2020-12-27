@@ -17,73 +17,42 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
   
     ls f1.fasta.gz > input.fofn
 
-3. **Calculate the recommended minimum seed length**
-  
-  .. code-block:: shell
-
-    bin/seq_stat -g 120m input.fofn > input.fofn.stat
-
-  The following is the partial content of file input.fofn.stat, and it shows the recommended minimum seed length is ``22282`` bp at the last line.
-
-  ::
-
-    [Read length stat]
-    Types            Count (#) Length (bp)
-    N10                  71318   27192
-    N20                 164057   23180
-    N30                 269458   20835
-    N40                 385238   19147
-    N50                 511119   17489
-    N60                 652431   15185
-    N70                 818488   12688
-    N80                1021430   10157
-    N90                1286325    7261
-
-    Types               Count (#)           Bases (bp)  Depth (X)
-    Raw                   2085004          23151934832     192.93
-    Filtered               107993             58936324       0.49
-    Clean                 1977011          23092998508     192.44
-
-    *Suggested seed_cutoff (genome size: 120.00Mb, expected seed depth: 45, real seed depth: 45.00): 22282 bp
-
-4. **Prepare config file (run.cfg)**
+3. **Prepare config file (run.cfg)**
 
   .. code-block:: shell
 
     [General]
-    job_type = sge
+    job_type = sge # here we use SGE to manage jobs
     job_prefix = nextDenovo
     task = all
     rewrite = yes
-    deltmp = yes
-    rerun = 3
+    deltmp = yes 
     parallel_jobs = 12
     input_type = raw
+    read_type = clr # clr, ont, hifi
     input_fofn = input.fofn
     workdir = 01_rundir
 
     [correct_option]
     read_cutoff = 1k
-    seed_cutoff = 22282
-    blocksize = 2g
+    genome_size = 120m # estimated genome size
+    sort_options = -m 50g -t 35
+    minimap2_options_raw = -t 20
     pa_correction = 6
-    seed_cutfiles = 6
-    sort_options = -m 50g -t 35 -k 40
-    minimap2_options_raw = -x ava-pb -t 20
     correction_options = -p 35
 
     [assemble_option]
-    minimap2_options_cns = -x ava-pb -t 20 -k17 -w17
+    minimap2_options_cns = -t 20 
     nextgraph_options = -a 1
 
 
-5. **Run**   
+4. **Run**   
   
   .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
-6. **Get result**
+5. **Get result**
   
   - Final corrected reads file (use the ``-b`` parameter to get more corrected reads)::
       
@@ -112,19 +81,19 @@ Assessment of the `Arabidopsis thaliana F1 generation of Col-0 and Cvi-0 strains
       Total          126263508                  88
 
 
-7. **Assemble with shasta** 
+6. **Assemble with shasta** 
   
   .. code-block:: shell 
     
     shasta-Linux-0.5.1 --input f1.fasta --threads 30
 
-8. **Download reference**   
+7. **Download reference**   
   
   .. code-block:: shell 
     
     wget ftp://ftp.arabidopsis.org/home/tair/Genes/TAIR10_genome_release/TAIR10_chromosome_files/TAIR10_chr_all.fas
 
-9. **Run Quast v5.0.2**
+8. **Run Quast v5.0.2**
   
   .. code-block:: shell
   

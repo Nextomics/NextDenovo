@@ -17,73 +17,42 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
   
     ls SRR6702603.fasta.gz SRR6821890.fasta.gz > input.fofn
 
-3. **Calculate the recommended minimum seed length**
-  
-  .. code-block:: shell 
-
-    bin/seq_stat -g 130m input.fofn > input.fofn.stat
-
-  The following is the partial content of file input.fofn.stat, and it shows the recommended minimum seed length is ``10000`` bp at the last line.
-
-  ::
-
-    [Read length stat]
-    Types            Count (#) Length (bp)
-    N10                  28670   26040
-    N20                  67370   20911
-    N30                 114553   17369
-    N40                 171113   14487
-    N50                 239221   11980
-    N60                 322288    9717
-    N70                 426190    7645
-    N80                 561853    5680
-    N90                 754633    3736
-
-    Types               Count (#)           Bases (bp)  Depth (X)
-    Raw                   1145050           8965907711      68.97
-    Filtered                    0                    0       0.00
-    Clean                 1145050           8965907711      68.97
-
-    *Suggested seed_cutoff (genome size: 130.00Mb, expected seed depth: 45, real seed depth: 40.48): 10000 bp
-
-4. **Prepare config file (run.cfg)**
+3. **Prepare config file (run.cfg)**
 
   .. code-block:: shell
 
     [General]
-    job_type = sge
+    job_type = sge # here we use SGE to manage jobs
     job_prefix = nextDenovo
-    task = all 
-    rewrite = yes 
-    deltmp = no
-    rerun = 3
+    task = all
+    rewrite = yes
+    deltmp = yes 
     parallel_jobs = 12
     input_type = raw
+    read_type = ont # clr, ont, hifi
     input_fofn = input.fofn
     workdir = 01_rundir
 
     [correct_option]
     read_cutoff = 1k
-    seed_cutoff = 10k
-    blocksize = 2g
+    genome_size = 130m # estimated genome size
+    sort_options = -m 30g -t 35
+    minimap2_options_raw = -t 20
     pa_correction = 6
-    seed_cutfiles = 6
-    sort_options = -m 30g -t 35 -k 45
-    minimap2_options_raw = -x ava-ont -t 20
     correction_options = -p 35
 
     [assemble_option]
-    minimap2_options_cns = -x ava-ont -t 20 -k17 -w17
+    minimap2_options_cns = -t 20 
     nextgraph_options = -a 1
 
 
-5. **Run**   
+4. **Run**   
   
   .. code-block:: shell
 
     nohup nextDenovo run.cfg &
 
-6. **Get result**
+5. **Get result**
   
   - Final corrected reads file (use the ``-b`` parameter to get more corrected reads)::
       
@@ -112,13 +81,13 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
       Total          133330776                  73
 
 
-7. **Assemble with shasta** 
+6. **Assemble with shasta** 
   
   .. code-block:: shell
     
     shasta-Linux-0.5.1  --input SRR6702603.fasta --input SRR6821890.fasta --threads 30
 
-8. **Download reference**   
+7. **Download reference**   
 
   .. code-block:: shell
 
@@ -126,7 +95,7 @@ Assessment of the `Drosophila melanogaster ISO1 ref. strain <https://www.ncbi.nl
     gzip -d GCF_000001215.4_Release_6_plus_ISO1_MT_genomic.fna.gz
 
 
-9. **Run Quast v5.0.2**
+8. **Run Quast v5.0.2**
     
   .. code-block:: shell
     

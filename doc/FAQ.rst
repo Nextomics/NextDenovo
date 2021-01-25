@@ -10,7 +10,7 @@ Frequently Asked Questions
 
 How to optimize parallel computing parameters?
 ----------------------------------------------
-The main parallel computing parameters include ``parallel_jobs``, ``pa_correction``, ``-t`` in `minimap2_options_raw`, `minimap2_options_cns`, `minimap2_options_map` and ``-p`` in `correction_options`. Each ``parallel_jobs`` subjob requires 32~64 gb RAM depending on the read length, each ``pa_correction`` subjob requires ~TOTAL_INPUT_BASES/4 bytes RAM.  
+The main parallel computing parameters include ``parallel_jobs``, ``pa_correction``, ``-t`` in `minimap2_options_raw`, `minimap2_options_cns` and ``-p`` in `correction_options`. ``parallel_jobs`` and ``pa_correction`` are used to control the number of subtasks running at the same time, ``-t`` and ``-p`` are used to control the number of threads/processes used in a single subtask. Each ``parallel_jobs`` subtask (including `minimap2_options_raw` and `minimap2_options_cns`) requires 32~64 gb RAM depending on the max read length, each ``pa_correction`` subtask (including `correction_options`) requires ~TOTAL_INPUT_BASES/4 bytes RAM. 
 
 1. For an assembly on a local computer with ``P`` cores and ``M`` gb memory. A typical configuration file can be set like this (not the best, but better than the default):
 	

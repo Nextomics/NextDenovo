@@ -18,7 +18,7 @@ click [here](https://github.com/Nextomics/NextDenovo/releases/latest/download/Ne
 * **REQUIREMENT**
 	* [Python](https://www.python.org/download/releases/) (Support python 2 and 3):
 		* [Psutil](https://psutil.readthedocs.io/en/latest/)
-		* [Drmaa](https://github.com/pygridtools/drmaa-python) (Only required by running under non-local system)
+		* [Drmaa](https://github.com/moold/ParallelTask#install) (Only required by running under non-local system)
 
 * **INSTALL**  
 `tar -vxzf NextDenovo.tgz && cd NextDenovo`

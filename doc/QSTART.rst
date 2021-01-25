@@ -60,7 +60,7 @@ Installation
    -  `Python <https://www.python.org/download/releases/>`_ (Support python 2 and 3):
    
       -  `Psutil <https://psutil.readthedocs.io/en/latest/>`_
-      -  `Drmaa <https://github.com/pygridtools/drmaa-python>`_ (Only required by running under non-local system)
+      -  `Drmaa <https://github.com/moold/ParallelTask#install>`_ (Only required by running under non-local system)
 
 -  **INSTALL**
 

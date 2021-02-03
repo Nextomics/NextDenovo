@@ -24,6 +24,9 @@ The main task log is usually located  in your working directory and is named `pi
 **Input data**
 `Total base count, sequencing depth, average/N50 read length...`
 
+**Config file**
+Please paste the complete content of the Config file (`run.cfg`) to here.
+
 **Operating system**
 Which operating system and version are you using?
 You can use the command `lsb_release -a` to get it.

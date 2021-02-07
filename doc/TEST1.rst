@@ -7,7 +7,7 @@ Assemble the genome of HG002_NA24385_son using NextDenovo
 
   .. code-block:: shell
 
-    wget https://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/final/ultra-long-ont.fastq.gz
+    wget ftp://ftp-trace.ncbi.nlm.nih.gov/giab/ftp/data/AshkenazimTrio/HG002_NA24385_son/Ultralong_OxfordNanopore/guppy-V2.3.4_2019-06-26/ultra-long-ont.fastq.gz
 
 2. **Prepare input file (input.fofn)**
 

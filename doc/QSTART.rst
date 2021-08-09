@@ -119,7 +119,7 @@ Getting Help
 Copyright
 ~~~~~~~~~
 
-NextDenovo is only freely available for academic use and other non-commercial use. For commercial use, please contact `NextOmics <https://www.nextomics.cn/en/>`_.
+NextDenovo is only freely available for academic use and other non-commercial use. For commercial use, please contact `GrandOmics <https://www.nextomics.cn/en/>`_.
 
 Cite
 ~~~~

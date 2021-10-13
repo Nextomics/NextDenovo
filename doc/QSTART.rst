@@ -57,18 +57,16 @@ Installation
 
 -  **REQUIREMENT**
 
-   -  `Python <https://www.python.org/download/releases/>`_ (Support python 2 and 3):
+   -  `Python <https://www.python.org/download/releases/>`__ (Support python 2 and 3):
    
-      -  `Psutil <https://psutil.readthedocs.io/en/latest/>`_
-      -  `Drmaa <https://github.com/moold/ParallelTask/blob/master/DRMAA.md>`_ (Only required by running under non-local system)
+      -  `Paralleltask <https://github.com/moold/ParallelTask>`__
 
 -  **INSTALL**
-
-      |ss| ``tar -vxzf NextDenovo.tgz && cd NextDenovo && make`` |se|
-
--  **UNINSTALL**
    
-      |ss| ``cd NextDenovo && make clean`` |se|
+   .. code-block:: shell
+
+      pip install paralleltask
+      tar -vxzf NextDenovo.tgz && cd NextDenovo
 
 -  **TEST**
    
@@ -109,9 +107,9 @@ Getting Help
 
 -  **HELP**
 
-   Feel free to raise an issue at the `issue page <https://github.com/Nextomics/NextDenovo/issues/new/choose>`_. They would also be helpful to other users.
+   Feel free to raise an issue at the `issue page <https://github.com/Nextomics/NextDenovo/issues/new/choose>`_.
 
-   .. important:: Please ask questions on the issue page first. They are also helpful to other users and avoid answering the same questions again and again.
+   .. important:: Please ask questions on the issue page first. They are also helpful to other users.
 -  **CONTACT**
    
    For additional help, please send an email to huj\_at\_grandomics\_dot\_com.

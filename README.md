@@ -11,17 +11,19 @@ We benchmarked NextDenovo against other assemblers using Oxford Nanopore long re
 
 * **DOWNLOAD**   
 click [here](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.4.0/NextDenovo.tgz`   
+`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.5.0/NextDenovo.tgz`   
 
 	***Note:*** If you get an error like `version 'GLIBC_2.14' not found` or `liblzma.so.0: cannot open shared object file`, Please download [this version](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo-CentOS6.9.tgz).
 
 * **REQUIREMENT**
 	* [Python](https://www.python.org/download/releases/) (Support python 2 and 3):
-		* [Psutil](https://psutil.readthedocs.io/en/latest/)
-		* [Drmaa](https://github.com/moold/ParallelTask/blob/master/DRMAA.md) (Only required by running under non-local system)
+		* [Paralleltask](https://github.com/moold/ParallelTask)
 
 * **INSTALL**  
-`tar -vxzf NextDenovo.tgz && cd NextDenovo`
+```
+pip install paralleltask
+tar -vxzf NextDenovo.tgz && cd NextDenovo
+```
 
 * **TEST**  
 `nextDenovo test_data/run.cfg`

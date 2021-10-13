@@ -104,9 +104,21 @@ Global options
   .. option::  nodelist = avanode.list.fofn
 
     a list of hostnames of available nodes, one node one line, used with usetempdir for non-sge job_type.
-  .. option:: cluster_options = auto
+  .. option:: submit = auto   
 
-    a template to define the resource requirements for each job, which will pass to `DRMAA <https://github.com/pygridtools/drmaa-python/wiki/FAQ>`__ as the nativeSpecification field.
+    command to submit a job, auto = automatically set by `Paralleltask <https://github.com/moold/ParallelTask>`__.
+  .. option:: kill = auto   
+
+    command to kill a job, auto = automatically set by `Paralleltask <https://github.com/moold/ParallelTask>`__.
+  .. option:: check_alive = auto   
+
+    command to check a job status, auto = automatically set by `Paralleltask <https://github.com/moold/ParallelTask>`__.
+  .. option:: job_id_regex = auto   
+
+    the job-id-regex to parse the job id from the out of ``submit``, auto = automatically set by `Paralleltask <https://github.com/moold/ParallelTask>`__.
+  .. option:: use_drmaa = no   
+
+    use drmaa to submit and control jobs.
 
 Correction options
 ##################

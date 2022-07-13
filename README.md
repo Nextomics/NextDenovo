@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/nextdenovo/badge/?version=latest)](https://nextdenovo.readthedocs.io/en/latest/?badge=latest)
 
 # NextDenovo
-NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, HiFi and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio Hifi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
+NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, ~~HiFi~~ and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
 
 We benchmarked NextDenovo against other assemblers using Oxford Nanopore long reads from [human](https://nextdenovo.readthedocs.io/en/latest/TEST2.html) and [Drosophila melanogaster](https://nextdenovo.readthedocs.io/en/latest/TEST4.html), and PacBio continuous long reads (CLR) from [Arabidopsis thaliana](https://nextdenovo.readthedocs.io/en/latest/TEST3.html). NextDenovo produces more contiguous assemblies with fewer contigs compared to the other tools. NextDenovo also shows a high assembly accurate level in terms of assembly consistency and single-base accuracy.
 

@@ -20,7 +20,7 @@
 NextDenovo
 ==========
 
-NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, HiFi and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use `NextPolish <https://github.com/Nextomics/NextPolish>`_.
+NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, HiFi and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, try `NextPolish <https://github.com/Nextomics/NextPolish>`_.
 
 NextDenovo contains two core modules: NextCorrect and NextGraph. NextCorrect can be used to correct long noisy reads with approximately 15% sequencing errors, and NextGraph can be used to construct a string graph with corrected reads. It also contains a modified version of `minimap2 <https://github.com/lh3/minimap2>`_ and some useful utilities (see :ref:`utilities <utilities>` for more details).
 
@@ -45,28 +45,31 @@ We benchmarked NextDenovo against other assemblers using Oxford Nanopore long re
 Installation
 ~~~~~~~~~~~~
 
--  **DOWNLOAD**  
+-  **REQUIREMENT**
+
+   -  `Python <https://www.python.org/download/releases/>`__ (Support python 2 and 3):
+   
+      -  `Paralleltask <https://github.com/moold/ParallelTask>`__ 
+
+      .. code-block:: shell
+         
+         pip install paralleltask
+
+-  **INSTALL**  
 
    click `here <https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz>`__ or use the following command:
 
    .. code-block:: shell
 
       wget https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz
+      tar -vxzf NextDenovo.tgz && cd NextDenovo
 
-   .. note:: If you get an error like ``version 'GLIBC_2.14' not found`` or ``liblzma.so.0: cannot open shared object file``, Please download `this version <https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo-CentOS6.9.tgz>`_.
+   If you want to compile from the source, run:
 
--  **REQUIREMENT**
-
-   -  `Python <https://www.python.org/download/releases/>`__ (Support python 2 and 3):
-   
-      -  `Paralleltask <https://github.com/moold/ParallelTask>`__
-
--  **INSTALL**
-   
    .. code-block:: shell
 
-      pip install paralleltask
-      tar -vxzf NextDenovo.tgz && cd NextDenovo
+      git clone git@github.com:Nextomics/NextDenovo.git
+      cd NextDenovo && make
 
 -  **TEST**
    

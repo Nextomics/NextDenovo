@@ -17,5 +17,6 @@
   CHM13hTERT human cell line with 120x Oxford Nanopore data <TEST2>   
   Arabidopsis thaliana with 192X PacBio CLR data (~1% heterozygosity) <TEST3>   
   Drosophila melanogaster with 69X Oxford Nanopore data <TEST4>
+  More data <TEST5>
 
 .. include:: QSTART.rst

@@ -3,27 +3,30 @@
 [![Documentation Status](https://readthedocs.org/projects/nextdenovo/badge/?version=latest)](https://nextdenovo.readthedocs.io/en/latest/?badge=latest)
 
 # NextDenovo
-NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, ~~HiFi~~ and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, please use [NextPolish](https://github.com/Nextomics/NextPolish).
+NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, ~~HiFi~~ and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, try [NextPolish](https://github.com/Nextomics/NextPolish).
 
 We benchmarked NextDenovo against other assemblers using Oxford Nanopore long reads from [human](https://nextdenovo.readthedocs.io/en/latest/TEST2.html) and [Drosophila melanogaster](https://nextdenovo.readthedocs.io/en/latest/TEST4.html), and PacBio continuous long reads (CLR) from [Arabidopsis thaliana](https://nextdenovo.readthedocs.io/en/latest/TEST3.html). NextDenovo produces more contiguous assemblies with fewer contigs compared to the other tools. NextDenovo also shows a high assembly accurate level in terms of assembly consistency and single-base accuracy.
 
 ## Installation
 
-* **DOWNLOAD**   
-click [here](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz) or use the following command:   
-`wget https://github.com/Nextomics/NextDenovo/releases/download/v2.5.0/NextDenovo.tgz`   
-
-	***Note:*** If you get an error like `version 'GLIBC_2.14' not found` or `liblzma.so.0: cannot open shared object file`, Please download [this version](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo-CentOS6.9.tgz).
-
 * **REQUIREMENT**
 	* [Python](https://www.python.org/download/releases/) (Support python 2 and 3):
-		* [Paralleltask](https://github.com/moold/ParallelTask)
+		* [Paralleltask](https://github.com/moold/ParallelTask) `pip install paralleltask`
 
 * **INSTALL**  
-```
-pip install paralleltask
-tar -vxzf NextDenovo.tgz && cd NextDenovo
-```
+
+	click [here](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz) or use the following command:   
+	```sh
+	wget https://github.com/Nextomics/NextDenovo/releases/download/v2.5.0/NextDenovo.tgz
+	tar -vxzf NextDenovo.tgz && cd NextDenovo
+	```   
+
+	If you want to compile from the source, run:
+
+	```sh
+	git clone git@github.com:Nextomics/NextDenovo.git
+	cd NextDenovo && make
+	```
 
 * **TEST**  
 `nextDenovo test_data/run.cfg`

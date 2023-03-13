@@ -99,6 +99,7 @@ class ConfigParser:
 		cfg['minimap2_options_map'] = ''
 		cfg['ctg_cns_options'] = ''
 		cfg['nextgraph_options'] = ''
+		cfg['_nextgraph_out_format'] = 'fasta'
 		return cfg
 
 	def _read(self, cfgfile):
@@ -278,4 +279,20 @@ class ConfigParser:
 		for opt in ['submit', 'kill', 'check_alive', 'job_id_regex']:
 			if self.cfg[opt] and self.cfg[opt].lower() == 'auto':
 				self.cfg[opt] = None
-				
+		
+		if '-a' in self.cfg['nextgraph_options']:
+			format_value = parse_options_value(self.cfg['nextgraph_options'], '-a')
+			if format_value == '0':
+				self.cfg['_nextgraph_out_format'] = 'non'
+			elif format_value == '1':
+				self.cfg['_nextgraph_out_format'] = 'fasta'
+			elif format_value == '2':
+				self.cfg['_nextgraph_out_format'] = 'graphml'
+			elif format_value == '3':
+				self.cfg['_nextgraph_out_format'] = 'gfa'
+			elif format_value == '4':
+				self.cfg['_nextgraph_out_format'] = 'path'
+			else:
+				log.error('Error, unaccepted option value -a %s in nextgraph_options.' % format_value)
+				sys.exit(1)
+

@@ -309,8 +309,8 @@ def asm_finished(cfg):
 def ctg_graph(cfg):
 	input_seq = cfg['ctg_graphdir'] + '/01.ctg_graph.input.seqs'
 	input_ovl = cfg['ctg_graphdir'] + '/01.ctg_graph.input.ovls'
-	cmd = SCRIPT_PATH + '/bin/nextgraph ' + cfg['nextgraph_options'] + ' -f %s %s -o nd.asm.p.fasta;\n' \
-		% (input_seq, input_ovl)
+	cmd = SCRIPT_PATH + '/bin/nextgraph ' + cfg['nextgraph_options'] + ' -f %s %s -o nd.asm.p.%s;\n' \
+		% (input_seq, input_ovl, cfg['_nextgraph_out_format'])
 	for i in range(int(cfg['_random_round_with_less_accuracy'])):
 		if i == 0:
 			cmd += SCRIPT_PATH + '/bin/nextgraph -a 0 -A -f %s %s;\n' % (input_seq, input_ovl)
@@ -777,6 +777,10 @@ def main(args):
 				sys.exit(1)
 		else:
 			log.info('skip step: ctg_graph')
+
+		if cfg['_nextgraph_out_format'] != "fasta":
+			log.info('nextDenovo finished')
+			sys.exit(0)
 
 		ctg_graph_output = get_ctg_graph_output(task.jobs)
 		task = Task(set_task(cfg, 'ctg_align', ctg_graph_output), dir_prefix='ctg_align', \

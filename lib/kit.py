@@ -174,12 +174,13 @@ def latestver(url):
 
 def getver(path):
 	ver = 'Unknown'
-	readme = path + '/README.md'
+	readme = path + '/VERSION'
 	if os.path.exists(readme):
-		with open(readme, 'r') as IN:
-			g = re.search(r'download/(v.*?)/', IN.read())
-			if g:
-				ver = g.group(1)
+		with open(readme) as f:
+			ver = f.read().strip().lower()
+			if not ver.startswith('v'):
+				ver = 'v' + ver
+
 	latest = latestver('https://api.github.com/repos/Nextomics/NextDenovo/releases/latest')
 	if latest != 'Unknown' and ver != latest:
 		print(('\033[35mPlease update to the latest version: %s, current version: %s \033[0m') % (latest, ver))

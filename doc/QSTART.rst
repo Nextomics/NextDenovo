@@ -125,7 +125,7 @@ NextDenovo is only freely available for academic use and other non-commercial us
 Cite
 ~~~~
 
-We are now preparing the manuscript of NextDenovo, so if you use NextDenovo now, please cite the official website (https://github.com/Nextomics/NextDenovo)
+Hu, J. et al. An efficient error correction and accurate assembly tool for noisy long reads. bioRxiv 2023.03.09.531669 (2023) doi:10.1101/2023.03.09.531669.
 
 Limitations
 ~~~~~~~~~~~

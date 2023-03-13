@@ -17,7 +17,7 @@ We benchmarked NextDenovo against other assemblers using Oxford Nanopore long re
 
 	click [here](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz) or use the following command:   
 	```sh
-	wget https://github.com/Nextomics/NextDenovo/releases/download/v2.5.0/NextDenovo.tgz
+	wget https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz
 	tar -vxzf NextDenovo.tgz && cd NextDenovo
 	```   
 

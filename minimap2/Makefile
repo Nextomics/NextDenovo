@@ -33,7 +33,7 @@ all:$(PROG)
 extra:all $(PROG_EXTRA)
 
 minimap2-nd:main.o libminimap2.a
-		$(CC) $(CFLAGS) main.o -o $@ -L. -lminimap2 $(LIBS) ../lib/ovl.c ../lib/bseq.c ../lib/align.c
+		$(CC) $(CFLAGS) main.o $(INCLUDES) -o $@ -L. -lminimap2 $(LIBS) ../lib/ovl.c ../lib/bseq.c ../lib/align.c
 
 minimap2-lite:example.o libminimap2.a
 		$(CC) $(CFLAGS) $< -o $@ -L. -lminimap2 $(LIBS)

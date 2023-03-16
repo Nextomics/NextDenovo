@@ -1,5 +1,3 @@
-CC=gcc
-
 TOP_DIR=$(PWD)
 BIN_DIR=$(TOP_DIR)/bin
 SUB_DIR=minimap2 util lib

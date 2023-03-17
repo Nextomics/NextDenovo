@@ -166,7 +166,7 @@ def latestver(url):
 		else:
 			g = re.search(r'([\S]+)', urlopen(url, timeout=1).read())
 		if g:
-			return g.group(1)
+			return g.group(1).lower().strip('v')
 		else:
 			return 'Unknown'
 	except Exception:
@@ -177,13 +177,11 @@ def getver(path):
 	readme = path + '/VERSION'
 	if os.path.exists(readme):
 		with open(readme) as f:
-			ver = f.read().strip().lower()
-			if not ver.startswith('v'):
-				ver = 'v' + ver
+			ver = f.read().lower().strip().strip('v')
 
 	latest = latestver('https://api.github.com/repos/Nextomics/NextDenovo/releases/latest')
 	if latest != 'Unknown' and ver != latest:
-		print(('\033[35mPlease update to the latest version: %s, current version: %s \033[0m') % (latest, ver))
+		print(('\033[35m Please update to the latest version: %s, current version: %s \033[0m') % (latest, ver))
 	return ver
 
 def pypath():

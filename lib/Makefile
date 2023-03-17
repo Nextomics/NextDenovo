@@ -1,15 +1,15 @@
 CC=gcc
-INCLUDES=
+INCLUDES =
 CFLAGS = -std=c99 -O3 -Wall -Wno-unused-function
 FPIC = -fPIC -shared
 HTSDIR = ./htslib/
 LIB_OBJECT = nextcorrect.so ovlseq.so ctg_cns.so ckit.so
-CTG_CNS_CFLAGS = -D_SVID_SOURCE -DLGS_CORRECT -I $(HTSDIR) -lm -lpthread -lz
+CTG_CNS_CFLAGS = -D_SVID_SOURCE -DLGS_CORRECT -I $(HTSDIR) -lm -lpthread -lz $(HTSLIB_CFLAGS)
 
 all: $(LIB_OBJECT)
 
 $(HTSDIR)/libhts.a:
-	cd  $(HTSDIR) && ./configure --without-curses --disable-bz2 --disable-lzma
+	cd  $(HTSDIR) && ./configure  --disable-bz2 --disable-lzma
 	@+make -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
 
 nextcorrect.so: align.c dag.c nextcorrect.c
@@ -22,7 +22,7 @@ nextcorrect: align.c dag.c nextcorrect.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 ctg_cns.so: bseq.c align.c bsort.c dag.c ctg_cns.c $(HTSDIR)/libhts.a
-	$(CC) $(CFLAGS) $(FPIC) $(INCLUDES) -o $@ $^ $(CTG_CNS_CFLAGS)
+	$(CC) $(CFLAGS) $(FPIC) $(INCLUDES) -o $@ $^ $(CTG_CNS_CFLAGS) 
 
 ckit.so: kit.c bseq.c
 	$(CC) $(CFLAGS) $(FPIC) $(INCLUDES) -o $@ $^ -lz

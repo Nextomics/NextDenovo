@@ -117,11 +117,6 @@ Getting Help
    
    For additional help, please send an email to huj\_at\_grandomics\_dot\_com.
 
-Copyright
-~~~~~~~~~
-
-NextDenovo is only freely available for academic use and other non-commercial use. For commercial use, please contact `GrandOmics <https://www.nextomics.cn/en/>`_.
-
 Cite
 ~~~~
 

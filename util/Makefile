@@ -27,7 +27,7 @@ seq_stat: seq_stat.c
 	$(CC) $(CFLAGS) -std=c99 $(INCLUDES) -o $@ $^ -lz
 
 bam_sort: bam_sort.c ../lib/bsort.c $(HTSDIR)/libhts.a
-	$(CC) $(CFLAGS) -o $@ $^ -I $(HTSDIR) $(INCLUDES) -lpthread -lm -lz
+	$(CC) $(CFLAGS) -o $@ $^ -I $(HTSDIR) $(INCLUDES) -lpthread -lcurl -lm -lz -lcrypto
 
 # align: realign.c ../lib/ovl.c ../lib/bseq.c ../lib/align.c
 # 	$(CC) $(CFLAGS) -Wno-unused-function -o $@ $^ -lz

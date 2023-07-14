@@ -1,5 +1,4 @@
 CC=gcc
-INCLUDES =
 CFLAGS = -std=c99 -O3 -Wall -Wno-unused-function
 FPIC = -fPIC -shared
 HTSDIR = ./htslib/
@@ -9,7 +8,7 @@ CTG_CNS_CFLAGS = -D_SVID_SOURCE -DLGS_CORRECT -I $(HTSDIR) -lm -lpthread -lz $(H
 all: $(LIB_OBJECT)
 
 $(HTSDIR)/libhts.a:
-	cd  $(HTSDIR) && ./configure  --disable-bz2 --disable-lzma
+	cd  $(HTSDIR) && ./configure --disable-bz2 --disable-lzma
 	@+make -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
 
 nextcorrect.so: align.c dag.c nextcorrect.c
@@ -31,7 +30,7 @@ ckit: kit.c bseq.c
 	$(CC) $(CFLAGS) -o $@ $^ -lz
 
 ctg_cns: bseq.c align.c dag.c bsort.c ctg_cns.c $(HTSDIR)/libhts.a
-	$(CC) $(CFLAGS) -o $@ $^ $(CTG_CNS_CFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(CTG_CNS_CFLAGS) -lcurl -lcrypto
 
 ovlseq: ovlseq.c bseq.c ovl.c index.c
 	$(CC) $(CFLAGS) -lz -Wno-unused-function -o $@ $^

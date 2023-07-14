@@ -3,7 +3,7 @@ CFLAGS = -std=c99 -O3 -Wall -Wno-unused-function
 FPIC = -fPIC -shared
 HTSDIR = ./htslib/
 LIB_OBJECT = nextcorrect.so ovlseq.so ctg_cns.so ckit.so
-CTG_CNS_CFLAGS = -D_SVID_SOURCE -DLGS_CORRECT -I $(HTSDIR) -lm -lpthread -lz $(HTSLIB_CFLAGS)
+CTG_CNS_CFLAGS = -D_SVID_SOURCE -DLGS_CORRECT -I $(HTSDIR) -lcurl -lcrypto -lm -lpthread -lz $(HTSLIB_CFLAGS)
 
 all: $(LIB_OBJECT)
 
@@ -30,7 +30,7 @@ ckit: kit.c bseq.c
 	$(CC) $(CFLAGS) -o $@ $^ -lz
 
 ctg_cns: bseq.c align.c dag.c bsort.c ctg_cns.c $(HTSDIR)/libhts.a
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(CTG_CNS_CFLAGS) -lcurl -lcrypto
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(CTG_CNS_CFLAGS)
 
 ovlseq: ovlseq.c bseq.c ovl.c index.c
 	$(CC) $(CFLAGS) -lz -Wno-unused-function -o $@ $^

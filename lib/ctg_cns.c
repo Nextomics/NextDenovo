@@ -323,7 +323,7 @@ static inline int get_align_tag(unsigned int *p, align_tags_t *tags, align_tag *
 
 static inline void update_msa(msa_p * msa, align_tags_t *tags_list, int aligned_seq_count, int lable){
 	unsigned int i, d, p, updated;
-	align_tag p1, pp, ppp;
+	align_tag p1 = {0, 0, 0}, pp, ppp;
 	for (p = 0; p < aligned_seq_count; p++){
 		d = 0;
 		pp = ppp = align_tag_head;

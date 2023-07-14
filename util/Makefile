@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -O3 -Wno-unused-function 
-INCLUDES=
+INCLUDES =
 PROGS = seq_dump ovl_sort seq_stat ovl_cvt seq_bit bam_sort nextgraph
 HTSDIR = ../lib/htslib/
 NEXTGRPHDIR = ./ng
@@ -8,7 +8,7 @@ NEXTGRPHDIR = ./ng
 all:$(PROGS)
 
 $(HTSDIR)/libhts.a:
-	cd  $(HTSDIR) && ./configure --without-curses --disable-bz2 --disable-lzma
+	cd  $(HTSDIR) && ./configure --disable-bz2 --disable-lzma
 	@+make -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
 
 seq_dump: seq_dump.c ../lib/bseq.c
@@ -27,7 +27,7 @@ seq_stat: seq_stat.c
 	$(CC) $(CFLAGS) -std=c99 $(INCLUDES) -o $@ $^ -lz
 
 bam_sort: bam_sort.c ../lib/bsort.c $(HTSDIR)/libhts.a
-		$(CC) $(CFLAGS) -o $@ $^ -I $(HTSDIR) $(INCLUDES) -lpthread -lm -lz
+	$(CC) $(CFLAGS) -o $@ $^ -I $(HTSDIR) $(INCLUDES) -lpthread -lm -lz
 
 # align: realign.c ../lib/ovl.c ../lib/bseq.c ../lib/align.c
 # 	$(CC) $(CFLAGS) -Wno-unused-function -o $@ $^ -lz

@@ -1,6 +1,7 @@
 [![Downloads](https://img.shields.io/github/downloads/Nextomics/NextDenovo/total?logo=github)](https://github.com/Nextomics/NextDenovo/releases/latest/download/NextDenovo.tgz)
 [![Release](https://img.shields.io/github/release/Nextomics/NextDenovo.svg)](https://github.com/Nextomics/NextDenovo/releases)
 [![Documentation Status](https://readthedocs.org/projects/nextdenovo/badge/?version=latest)](https://nextdenovo.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://img.shields.io/badge/DOI-10.1101%2F2023.03.09.531669-blue)](https://www.biorxiv.org/content/10.1101/2023.03.09.531669v1)
 
 # NextDenovo
 NextDenovo is a string graph-based *de novo* assembler for long reads (CLR, ~~HiFi~~ and ONT). It uses a "correct-then-assemble" strategy similar to canu (no correction step for PacBio HiFi reads), but requires significantly less computing resources and storages. After assembly, the per-base accuracy is about 98-99.8%, to further improve single base accuracy, try [NextPolish](https://github.com/Nextomics/NextPolish).

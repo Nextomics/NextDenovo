@@ -16,6 +16,8 @@ Benchmarking data used in NextDenovo Paper
 
 	- `canu.cns.fa.gz <http://obs.grandomics.com/public/error_correction/simulation_data/canu.cns.fa.gz>`__
 
+	- `consent.cns.fa <http://obs.grandomics.com/public/assembly/03_CHM13/consent.cns.fa>`__
+
 - actual biological data
 	- `canu.cns.fa.gz <http://obs.grandomics.com/public/error_correction/actual_biological_data/canu.cns.fa.gz>`__
 
@@ -24,6 +26,8 @@ Benchmarking data used in NextDenovo Paper
 	- `nextdenovo.cns.fa.gz <http://obs.grandomics.com/public/error_correction/actual_biological_data/nextdenovo.cns.fa.gz>`__
 	
 	- `ont.raw.fa.gz <http://obs.grandomics.com/public/error_correction/actual_biological_data/ont.raw.fa.gz>`__
+
+	- `consent.cns.fa <http://obs.grandomics.com/public/assembly/03_CHM13/02_chr01/consent.cns.fa>`__
 	
 2. Data used in assembly
 

@@ -120,7 +120,7 @@ Getting Help
 Cite
 ~~~~
 
-Hu, J. et al. An efficient error correction and accurate assembly tool for noisy long reads. bioRxiv 2023.03.09.531669 (2023) doi:10.1101/2023.03.09.531669.
+Hu J, Wang Z, Sun Z, et al. NextDenovo: an efficient error correction and accurate assembly tool for noisy long reads[J]. Genome Biology, 2024, 25(1): 1-19.
 
 Limitations
 ~~~~~~~~~~~

@@ -6,6 +6,10 @@
  ********************************/
 
 #define _POSIX_C_SOURCE 200809L
+#if defined(__APPLE__) && defined(__MACH__)
+/* _POSIX_C_SOURCE alone hides pthread_setname_np on macOS */
+#define _DARWIN_C_SOURCE
+#endif
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>

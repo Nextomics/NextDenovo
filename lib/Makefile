@@ -9,7 +9,7 @@ all: $(LIB_OBJECT)
 
 $(HTSDIR)/libhts.a:
 	cd  $(HTSDIR) && ./configure --disable-bz2 --disable-lzma
-	@+make -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
+	@+$(MAKE) -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
 
 nextcorrect.so: align.c dag.c nextcorrect.c
 	$(CC) $(CFLAGS) $(FPIC) $(INCLUDES) -o $@ $^ 
@@ -37,4 +37,4 @@ ovlseq: ovlseq.c bseq.c ovl.c index.c
 
 clean:
 	rm -rf *.o *.pyc $(LIB_OBJECT) nextcorrect ovlseq nextcorrect ctg_cns kit __pycache__
-	@+make clean -C $(HTSDIR)
+	@+$(MAKE) clean -C $(HTSDIR)

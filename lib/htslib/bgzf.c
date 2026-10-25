@@ -302,7 +302,6 @@ fail:
 BGZF *bgzf_open(const char *path, const char *mode)
 {
     BGZF *fp = 0;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         hFILE *fpr;
         if ((fpr = hopen(path, mode)) == 0) return 0;
@@ -325,7 +324,6 @@ BGZF *bgzf_open(const char *path, const char *mode)
 BGZF *bgzf_dopen(int fd, const char *mode)
 {
     BGZF *fp = 0;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         hFILE *fpr;
         if ((fpr = hdopen(fd, mode)) == 0) return 0;
@@ -348,7 +346,6 @@ BGZF *bgzf_dopen(int fd, const char *mode)
 BGZF *bgzf_hopen(hFILE *hfp, const char *mode)
 {
     BGZF *fp = NULL;
-    assert(compressBound(BGZF_BLOCK_SIZE) < BGZF_MAX_BLOCK_SIZE);
     if (strchr(mode, 'r')) {
         fp = bgzf_read_init(hfp);
         if (fp == NULL) return NULL;

@@ -9,7 +9,7 @@ all:$(PROGS)
 
 $(HTSDIR)/libhts.a:
 	cd  $(HTSDIR) && ./configure --disable-bz2 --disable-lzma
-	@+make -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
+	@+$(MAKE) -C $(HTSDIR) CPPFLAGS+=-fPIC $(INCLUDES)
 
 seq_dump: seq_dump.c ../lib/bseq.c
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ -lz
@@ -33,10 +33,10 @@ bam_sort: bam_sort.c ../lib/bsort.c $(HTSDIR)/libhts.a
 # 	$(CC) $(CFLAGS) -Wno-unused-function -o $@ $^ -lz
 
 nextgraph:
-	make -C $(NEXTGRPHDIR)
+	$(MAKE) -C $(NEXTGRPHDIR)
 	@+cp $(NEXTGRPHDIR)/$@ ./
 
 clean:
 	rm -f *.o $(PROGS)
-	make clean -C $(NEXTGRPHDIR)
-	@+make clean -C $(HTSDIR)
+	$(MAKE) clean -C $(NEXTGRPHDIR)
+	@+$(MAKE) clean -C $(HTSDIR)

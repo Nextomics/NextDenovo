@@ -5,7 +5,13 @@ import os
 import sys
 import re
 import argparse
-from multiprocessing import Pool
+import multiprocessing
+try:
+	# Workers rely on globals inherited through fork, which is no longer the
+	# default start method on macOS (Python 3.8+) or Linux (Python 3.14+).
+	Pool = multiprocessing.get_context("fork").Pool
+except AttributeError:
+	from multiprocessing import Pool
 from kit import *
 from ctypes import *
 
